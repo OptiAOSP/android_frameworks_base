@@ -2198,4 +2198,7 @@
   <java-symbol type="integer" name="valueOff" />
   <java-symbol type="integer" name="valueOn" />
 
+  <!-- Package Manager -->
+  <java-symbol type="array" name="config_disabledComponents" />
+
 </resources>
