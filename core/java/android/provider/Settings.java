@@ -3632,6 +3632,19 @@ public final class Settings {
          */
         public static final String STATUS_BAR_SHOW_WEATHER = "status_bar_show_weather";
 
+
+        /**
+         * Enable weather display in header view
+         * @hide
+         */
+        public static final String STATUS_BAR_HEADER_WEATHER = "status_bar_header_weather";
+
+        /**
+         * icon pack to use for weather condition images
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_ICON_PACK = "status_bar_weather_icon_pack";
+
         /**
          * Show or hide clock
          * 0 - hide
@@ -3704,19 +3717,10 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
 
         /**
-         * Enable weather display in header view
-         * @hide
-         */
-        public static final String STATUS_BAR_HEADER_WEATHER = "status_bar_header_weather";
-
-        /**
          * icon pack to use for weather condition images
          * @hide
          */
         public static final String STATUS_BAR_WEATHER_ICON_PACK = "status_bar_weather_icon_pack";
-
-
-
 
         /**
          * Whether to show the weather info on the lock screen
