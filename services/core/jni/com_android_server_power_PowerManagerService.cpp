@@ -164,6 +164,13 @@ static void nativeSetFeature(JNIEnv *env, jclass clazz, jint featureId, jint dat
     }
 }
 
+static void nativeSendPowerHintString(JNIEnv *env, jclass clazz, jint hintId, jstring data) {
+    ScopedUtfChars name(env, data);
+
+    if (gPowerModule && gPowerModule->powerHint) {
+        gPowerModule->powerHint(gPowerModule, (power_hint_t)hintId, (void*)name.c_str());
+    }
+}
 // ----------------------------------------------------------------------------
 
 static JNINativeMethod gPowerManagerServiceMethods[] = {
@@ -182,6 +189,9 @@ static JNINativeMethod gPowerManagerServiceMethods[] = {
             (void*) nativeSendPowerHint },
     { "nativeSetFeature", "(II)V",
             (void*) nativeSetFeature },
+    { "nativeSendPowerHintString", "(ILjava/lang/String;)V",
+            (void*) nativeSendPowerHintString },
+
 };
 
 #define FIND_CLASS(var, className) \
