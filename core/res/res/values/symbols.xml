@@ -2196,4 +2196,11 @@
   <java-symbol type="array" name="config_disabledComponents" />
   <java-symbol type="array" name="config_forceEnabledComponents" />
 
+  <!-- Torch -->
+
+  <java-symbol type="bool" name="useCameraInterface" />
+  <java-symbol type="string" name="flashDevice" />
+  <java-symbol type="integer" name="valueOff" />
+  <java-symbol type="integer" name="valueOn" />
+
 </resources>
