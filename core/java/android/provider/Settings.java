@@ -3613,6 +3613,12 @@ public final class Settings {
         */
         public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot";
 
+	/**
+         * show the membar in recents
+         *  @hide
+         */
+        public static final String SYSTEMUI_RECENTS_MEM_DISPLAY = "systemui_recents_mem_display";
+
         /**
          * Whether to use the custom status bar header or not
          * @hide
