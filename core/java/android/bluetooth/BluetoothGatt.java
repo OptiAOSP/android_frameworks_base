@@ -734,6 +734,7 @@ public final class BluetoothGatt implements BluetoothProfile {
             }
             mConnState = CONN_STATE_CONNECTING;
         }
+        mAutoConnect = autoConnect;
         if (!registerApp(callback)) {
             synchronized(mStateLock) {
                 mConnState = CONN_STATE_IDLE;
@@ -743,7 +744,6 @@ public final class BluetoothGatt implements BluetoothProfile {
         }
 
         // the connection will continue after successful callback registration
-        mAutoConnect = autoConnect;
         return true;
     }
 
