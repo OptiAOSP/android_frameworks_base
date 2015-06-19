@@ -17,6 +17,9 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button to soft reboot the device, within the Reboot Options dialog -->
+    <string name="reboot_systemui">Restart SystemUI</string>
+
     <!-- Slimseekbar -->
     <string name="default_string">Default</string>
 
