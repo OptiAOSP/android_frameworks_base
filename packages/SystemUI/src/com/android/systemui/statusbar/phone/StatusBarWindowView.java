@@ -211,6 +211,29 @@ public class StatusBarWindowView extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean intercept = false;
+<<<<<<< HEAD
+=======
+        final int h = getMeasuredHeight();
+        if (mDoubleTapToSleepEnabled) {
+            if (mService.getBarState() == StatusBarState.SHADE
+                    && ev.getY() < mStatusBarHeaderHeight) {
+                if (DEBUG) Log.w(TAG, "logging double tap gesture");
+                mDoubleTapGesture.onTouchEvent(ev);
+            } else if (mService.getBarState() == StatusBarState.KEYGUARD
+                    && (ev.getY() < (h / 3) ||
+                    ev.getY() > (h - mStatusBarHeaderHeight))) {
+                if (DEBUG) Log.w(TAG, "logging lock screen double tap gesture");
+                mDoubleTapGesture.onTouchEvent(ev);
+            }
+        }
+        if (mDoubleTapToSleepLockScreen &&
+                mService.getBarState() == StatusBarState.KEYGUARD
+                && (ev.getY() < (h / 3) ||
+                ev.getY() > (h - mStatusBarHeaderHeight))) {
+            if (DEBUG) Log.w(TAG, "logging lock screen double tap gesture");
+            mDoubleTapGesture.onTouchEvent(ev);
+        }
+>>>>>>> 9ddf6f2... FWB: statusbar weather temperature placement (2/2)
         if (mNotificationPanel.isFullyExpanded()
                 && mStackScrollLayout.getVisibility() == View.VISIBLE
                 && mService.getBarState() == StatusBarState.KEYGUARD
