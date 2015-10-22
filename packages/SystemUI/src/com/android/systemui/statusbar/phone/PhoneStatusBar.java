@@ -333,6 +333,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // Keyguard is going away soon.
     private boolean mKeyguardGoingAway;
     // Keyguard is actually fading away now.
+
+    // Status bar brightness
+    private int mStatusBarHeaderHeight;
+
     private boolean mKeyguardFadingAway;
     private boolean mKeyguardShowingMedia;
     private long mKeyguardFadingAwayDelay;
@@ -2509,7 +2513,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (mBrightnessControl) {
             brightnessControl(event);
-            if ((mDisabled & StatusBarManager.DISABLE_EXPAND) != 0) {
+            if ((mDisabled1 & StatusBarManager.DISABLE_EXPAND) != 0) {
                 return true;
             }
         }
@@ -3282,6 +3286,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mRowMaxHeight =  res.getDimensionPixelSize(R.dimen.notification_max_height);
 
         mKeyguardMaxNotificationCount = res.getInteger(R.integer.keyguard_max_notification_count);
+
+        mStatusBarHeaderHeight = res.getDimensionPixelSize(R.dimen.status_bar_header_height);
 
         if (DEBUG) Log.v(TAG, "updateResources");
     }
