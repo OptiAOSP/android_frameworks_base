@@ -3565,7 +3565,7 @@ public final class Settings {
         public static final String NAVIGATION_BAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
 
         /**
-         * Navigation bar height when it is on landscape at the right
+         * location of the clear all recents button
          * @hide
          */
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
@@ -3575,6 +3575,12 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
+
+        /**
+         * Whether to dismiss all recents tasks
+         * @hide
+         */
+        public static final String RECENTS_CLEAR_ALL_DISMISS_ALL = "recents_clear_all_dismiss_all";
 
         /**
          * Display style of the status bar battery information
