@@ -3301,8 +3301,6 @@ public final class Settings {
         public static final String RECENTS_FULL_SCREEN = "recents_full_screen";
 
         /**
-=======
->>>>>>> 8f4975f... [Base]: recents panel clear all button tweaks
          * I am the lolrus.
          * <p>
          * Nonzero values indicate that the user has a bukkit.
