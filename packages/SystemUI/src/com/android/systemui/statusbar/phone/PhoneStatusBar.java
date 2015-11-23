@@ -502,7 +502,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
 
             mShowStatusBarCarrier = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_CARRIER, 1, mCurrentUserId) == 1;
+                    Settings.System.STATUS_BAR_CARRIER, 0, mCurrentUserId) == 1;
             showStatusBarCarrierLabel(mShowStatusBarCarrier);	
         }
     }
