@@ -3275,7 +3275,6 @@ public final class Settings {
 
         /**
          * Give SMS notifications a breathing effect
-         * @hide
          */
         public static final String KEY_SMS_BREATH = "sms_breath";
 
