@@ -328,7 +328,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // expanded notifications
     NotificationPanelView mNotificationPanel; // the sliding/resizing panel within the notification window
     View mExpandedContents;
-    TextView mNotificationPanelDebugText;
+    //TextView mNotificationPanelDebugText;
 
     // settings
     private QSPanel mQSPanel;
@@ -419,6 +419,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_HEADER_WEATHER),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_ICON_PACK),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -436,6 +442,45 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mAutomaticBrightness = mode != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
             mBrightnessControl = Settings.System.getInt(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
+
+            final int oldWeatherState = mWeatherTempState;
+            mWeatherTempState = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
+                    UserHandle.USER_CURRENT);
+            if (oldWeatherState != mWeatherTempState) {
+                updateTempView();
+            }
+
+            if (mNavigationBarView != null) {
+                boolean navLeftInLandscape = Settings.System.getInt(resolver,
+                        Settings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0) == 1;
+                mNavigationBarView.setLeftInLandscape(navLeftInLandscape);
+
+            }
+
+            mShowStatusBarCarrier = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_CARRIER, 0, mCurrentUserId) == 1;
+            showStatusBarCarrierLabel(mShowStatusBarCarrier);	
+
+
+            mHeader.settingsChanged();
+        }
+    }
+
+    private void updateWeatherTextState(String temp) {
+        if (mWeatherTempView != null) {
+            if (mWeatherTempState == 0 || TextUtils.isEmpty(temp)) {
+                mWeatherTempView.setVisibility(View.GONE);
+                return;
+            }
+            if (mWeatherTempState == 1) {
+                SpannableString span = new SpannableString(temp);
+                span.setSpan(new RelativeSizeSpan(0.7f), temp.length() - 1, temp.length(), 0);
+                mWeatherTempView.setText(span);
+            } else if (mWeatherTempState == 2) {
+                mWeatherTempView.setText(temp.substring(0, temp.length() - 1));
+            }
+            mWeatherTempView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -793,11 +838,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mNotificationPanel.setHeadsUpManager(mHeadsUpManager);
         mNotificationData.setHeadsUpManager(mHeadsUpManager);
 
-        if (MULTIUSER_DEBUG) {
+        /*if (MULTIUSER_DEBUG) {
             mNotificationPanelDebugText = (TextView) mNotificationPanel.findViewById(
                     R.id.header_debug_info);
             mNotificationPanelDebugText.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         if (mNavigationBarView == null) {
             mNavigationBarView =
@@ -1259,6 +1304,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void notifyNavigationBarScreenOn(boolean screenOn) {
         if (mNavigationBarView == null) return;
         mNavigationBarView.notifyScreenOn(screenOn);
+    }
+
+    private void notifyHeaderViewScreenOn(boolean screenOn) {
+        if (mHeader == null) return;
+        mHeader.notifyScreenOn(screenOn);
     }
 
     private WindowManager.LayoutParams getNavigationBarLayoutParams() {
@@ -3230,6 +3280,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             else if (Intent.ACTION_SCREEN_ON.equals(action)) {
                 notifyNavigationBarScreenOn(true);
+                notifyHeaderViewScreenOn(true);
             }
         }
     };
@@ -3307,7 +3358,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     @Override
     public void userSwitched(int newUserId) {
         super.userSwitched(newUserId);
-        if (MULTIUSER_DEBUG) mNotificationPanelDebugText.setText("USER " + newUserId);
+        //if (MULTIUSER_DEBUG) mNotificationPanelDebugText.setText("USER " + newUserId);
         animateCollapsePanels();
         updatePublicMode();
         updateNotifications();
