@@ -117,21 +117,20 @@ public class SubscriptionInfo implements Parcelable {
      * @hide
      */
     public SubscriptionInfo(int id, String iccId, int simSlotIndex, CharSequence displayName,
-            CharSequence carrierName, int nameSource, int iconTint, String number, int roaming,
-            Bitmap icon, int mcc, int mnc, String countryIso, int userNwMode) {
+            CharSequence carrierName, int nameSource, int userNwMode, String number, int roaming,
+            Bitmap icon, int mcc, int mnc, String countryIso) {
         this.mId = id;
         this.mIccId = iccId;
         this.mSimSlotIndex = simSlotIndex;
         this.mDisplayName = displayName;
         this.mCarrierName = carrierName;
         this.mNameSource = nameSource;
-        this.mIconTint = iconTint;
+        this.mUserNwMode = userNwMode;
         this.mNumber = number;
         this.mDataRoaming = roaming;
         this.mIconBitmap = icon;
         this.mMcc = mcc;
         this.mMnc = mnc;
-        this.mUserNwMode = userNwMode;
         this.mCountryIso = countryIso;
     }
 
@@ -306,17 +305,16 @@ public class SubscriptionInfo implements Parcelable {
             CharSequence displayName = source.readCharSequence();
             CharSequence carrierName = source.readCharSequence();
             int nameSource = source.readInt();
-            int iconTint = source.readInt();
+            int userNwMode = source.readInt();
             String number = source.readString();
             int dataRoaming = source.readInt();
             int mcc = source.readInt();
             int mnc = source.readInt();
-            int userNwMode = source.readInt();
             String countryIso = source.readString();
             Bitmap iconBitmap = Bitmap.CREATOR.createFromParcel(source);
 
             return new SubscriptionInfo(id, iccId, simSlotIndex, displayName, carrierName,
-                    nameSource, iconTint, number, dataRoaming, iconBitmap, mcc, mnc, countryIso, userNwMode);
+                    nameSource, userNwMode, number, dataRoaming, iconBitmap, mcc, mnc, countryIso);
         }
 
         @Override
