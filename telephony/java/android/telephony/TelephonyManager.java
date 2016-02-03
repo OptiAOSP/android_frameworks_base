@@ -1548,7 +1548,7 @@ public class TelephonyManager {
      *   {@link android.Manifest.permission#READ_PHONE_STATE READ_PHONE_STATE}
      */
     public int getDataNetworkType() {
-        return getDataNetworkType(getSubId());
+        return getDataNetworkType(getDefaultDataSubscriptionId());
     }
 
     /**
@@ -3478,6 +3478,13 @@ public class TelephonyManager {
     }
 
     /**
+     * Returns Default Data subscription.
+     */
+    private static int getDefaultDataSubscriptionId() {
+        return SubscriptionManager.getDefaultDataSubscriptionId();
+    }
+
+    /**
      * Returns Default phone.
      */
     private static int getDefaultPhone() {
@@ -4557,7 +4564,7 @@ public class TelephonyManager {
     /** @hide */
     @SystemApi
     public void setDataEnabled(boolean enable) {
-        setDataEnabled(SubscriptionManager.getDefaultDataSubscriptionId(), enable);
+        setDataEnabled(getDefaultDataSubscriptionId(), enable);
     }
 
     /** @hide */
@@ -4576,7 +4583,7 @@ public class TelephonyManager {
     /** @hide */
     @SystemApi
     public boolean getDataEnabled() {
-        return getDataEnabled(SubscriptionManager.getDefaultDataSubscriptionId());
+        return getDataEnabled(getDefaultDataSubscriptionId());
     }
 
     /** @hide */
