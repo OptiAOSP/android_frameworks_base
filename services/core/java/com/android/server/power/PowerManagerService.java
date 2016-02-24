@@ -60,6 +60,7 @@ import android.os.UserHandle;
 import android.os.WorkSource;
 import android.provider.Settings;
 import android.service.dreams.DreamManagerInternal;
+import android.telephony.TelephonyManager;
 import android.util.EventLog;
 import android.util.Slog;
 import android.util.TimeUtils;
@@ -147,6 +148,8 @@ public final class PowerManagerService extends SystemService
     // Power hints defined in hardware/libhardware/include/hardware/power.h.
     private static final int POWER_HINT_INTERACTION = 2;
     private static final int POWER_HINT_LOW_POWER = 5;
+
+    private static final int SAFE_CALL_TELEPHONY_OFFHOOK_TIMEOUT_MS = 30000;  // 30s after boot completed
 
     private final Context mContext;
     private final ServiceThread mHandlerThread;
@@ -429,6 +432,8 @@ public final class PowerManagerService extends SystemService
     private final ArrayList<PowerManagerInternal.LowPowerModeListener> mLowPowerModeListeners
             = new ArrayList<PowerManagerInternal.LowPowerModeListener>();
 
+    private TelephonyManager telephonyManager;
+
     // power profile support
     private PowerProfileManager mProfileManager;
     private boolean mProfilesSupported;
@@ -458,6 +463,11 @@ public final class PowerManagerService extends SystemService
     // timeout for button backlight automatic turning off
     private int mButtonTimeout;
 
+    // System time measured once after mBootCompleted == true
+    private long mBootCompletedTime;
+
+    private boolean mIsSafeCallTelephonyOffhook = false;
+
     private native void nativeInit();
 
     private static native void nativeAcquireSuspendBlocker(String name);
@@ -470,6 +480,7 @@ public final class PowerManagerService extends SystemService
     public PowerManagerService(Context context) {
         super(context);
         mContext = context;
+        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         mHandlerThread = new ServiceThread(TAG,
                 Process.THREAD_PRIORITY_DISPLAY, false /*allowIo*/);
         mHandlerThread.start();
@@ -506,6 +517,7 @@ public final class PowerManagerService extends SystemService
             if (phase == PHASE_BOOT_COMPLETED) {
                 final long now = SystemClock.uptimeMillis();
                 mBootCompleted = true;
+                mBootCompletedTime = now;
                 mDirty |= DIRTY_BOOT_COMPLETED;
                 userActivityNoUpdateLocked(
                         now, PowerManager.USER_ACTIVITY_EVENT_OTHER, 0, Process.SYSTEM_UID);
@@ -1697,8 +1709,18 @@ public final class PowerManagerService extends SystemService
      * to suspend.
      */
     private boolean isBeingKeptAwakeLocked() {
+	boolean telephonyManager_isOffhook = false;
+
+	if (!mIsSafeCallTelephonyOffhook)
+		mIsSafeCallTelephonyOffhook = ((SystemClock.uptimeMillis() - mBootCompletedTime)
+							> SAFE_CALL_TELEPHONY_OFFHOOK_TIMEOUT_MS);
+
+	if (mBootCompleted && mSystemReady && mIsSafeCallTelephonyOffhook)
+		telephonyManager_isOffhook = telephonyManager.isOffhook();
+
         return mStayOn
                 || mProximityPositive
+                || telephonyManager_isOffhook
                 || (mWakeLockSummary & WAKE_LOCK_STAY_AWAKE) != 0
                 || (mUserActivitySummary & (USER_ACTIVITY_SCREEN_BRIGHT
                         | USER_ACTIVITY_SCREEN_DIM)) != 0
