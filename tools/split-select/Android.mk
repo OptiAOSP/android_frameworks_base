@@ -55,7 +55,7 @@ hostStaticLibs := \
     libziparchive-host \
     libbase
 
-cFlags := -Wall -Werror
+cFlags := -Wall 
 
 ifeq ($(HOST_OS),linux)
     hostLdLibs += -lrt -ldl -lpthread

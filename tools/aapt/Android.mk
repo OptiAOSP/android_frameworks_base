@@ -71,7 +71,7 @@ aaptHostStaticLibs := \
     libbase
 
 aaptCFlags := -DAAPT_VERSION=\"$(BUILD_NUMBER)\"
-aaptCFlags += -Wall -Werror
+aaptCFlags += -Wall 
 
 ifeq ($(HOST_OS),linux)
     aaptHostLdLibs += -lrt -ldl -lpthread
