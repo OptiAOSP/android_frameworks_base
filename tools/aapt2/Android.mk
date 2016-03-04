@@ -104,7 +104,7 @@ else
 	hostLdLibs += -lz
 endif
 
-cFlags := -Wall -Werror -Wno-unused-parameter -UNDEBUG
+cFlags := -Wall  -Wno-unused-parameter -UNDEBUG
 cppFlags := -std=c++11 -Wno-missing-field-initializers -Wno-unused-private-field
 
 # ==========================================================

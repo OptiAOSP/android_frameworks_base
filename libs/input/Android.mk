@@ -34,7 +34,7 @@ LOCAL_C_INCLUDES := \
     frameworks/native/services
 
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 
 ifeq ($(TARGET_DISABLE_CURSOR_LAYER),true)
 	LOCAL_CFLAGS += -DDISABLE_CURSOR_LAYER
