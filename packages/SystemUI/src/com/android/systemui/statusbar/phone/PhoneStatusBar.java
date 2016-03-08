@@ -1083,7 +1083,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction("com.android.systemui.TOGGLE_FLASHLIGHT");
         filter.addAction(Intent.ACTION_KEYGUARD_WALLPAPER_CHANGED);
 
         if (DEBUG_MEDIA_FAKE_ARTWORK) {
@@ -3442,8 +3441,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if (DEBUG_MEDIA_FAKE_ARTWORK) {
                     updateMediaMetaData(true);
                 }
-            } else if ("com.android.systemui.TOGGLE_FLASHLIGHT".equals(action)) {
-                mFlashlightController.toggleFlashlight();
             } else if (Intent.ACTION_KEYGUARD_WALLPAPER_CHANGED.equals(action)) {
                 updateMediaMetaData(true);
             }
