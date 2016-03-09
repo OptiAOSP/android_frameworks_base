@@ -171,14 +171,14 @@ final class ProcessList {
     // These are the low-end OOM level limits.  This is appropriate for an
     // HVGA or smaller phone with less than 512MB.  Values are in KB.
     private final int[] mOomMinFreeLow = new int[] {
-            1024, 3048, 8120,
-            12280, 14244, 26152
+            1024 * 4, 3048 * 4, 8120 * 4,
+            12280 * 4, 14244 * 4, 26152 * 4
     };
     // These are the high-end OOM level limits.  This is appropriate for a
     // 1280x800 or larger screen with around 1GB RAM.  Values are in KB.
     private final int[] mOomMinFreeHigh = new int[] {
-            1024, 3048, 8120,
-            12280, 14244, 26152
+            1024 * 4, 3048 * 4, 8120 * 4,
+            12280 * 4, 14244 * 4, 26152 * 4
     };
     // The actual OOM killer memory levels we are using.
     private final int[] mOomMinFree = new int[mOomAdj.length];
