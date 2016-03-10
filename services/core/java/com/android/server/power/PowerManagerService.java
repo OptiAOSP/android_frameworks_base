@@ -518,6 +518,8 @@ public final class PowerManagerService extends SystemService
                 final long now = SystemClock.uptimeMillis();
                 mBootCompleted = true;
                 mBootCompletedTime = now;
+                Slog.d("onBootPhase", "now = " + Long.toString(now) + " ms");
+
                 mDirty |= DIRTY_BOOT_COMPLETED;
                 userActivityNoUpdateLocked(
                         now, PowerManager.USER_ACTIVITY_EVENT_OTHER, 0, Process.SYSTEM_UID);
@@ -1709,14 +1711,20 @@ public final class PowerManagerService extends SystemService
      * to suspend.
      */
     private boolean isBeingKeptAwakeLocked() {
+	long now;
 	boolean telephonyManager_isOffhook = false;
 
-	if (!mIsSafeCallTelephonyOffhook)
-		mIsSafeCallTelephonyOffhook = ((SystemClock.uptimeMillis() - mBootCompletedTime)
-							> SAFE_CALL_TELEPHONY_OFFHOOK_TIMEOUT_MS);
+	if (!mIsSafeCallTelephonyOffhook) {
+		now = SystemClock.uptimeMillis();
+		mIsSafeCallTelephonyOffhook =
+			((now - mBootCompletedTime) > SAFE_CALL_TELEPHONY_OFFHOOK_TIMEOUT_MS);
+	}
 
-	if (mBootCompleted && mSystemReady && mIsSafeCallTelephonyOffhook)
+	if (mSystemReady && mIsSafeCallTelephonyOffhook) {
 		telephonyManager_isOffhook = telephonyManager.isOffhook();
+		Slog.d(TAG, "isBeingKeptAwakeLocked: telephonyManager_isOffhook=" +
+			(telephonyManager_isOffhook ? "true" : "false"));
+	}
 
         return mStayOn
                 || mProximityPositive
