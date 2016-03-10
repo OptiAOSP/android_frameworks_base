@@ -1722,8 +1722,8 @@ public final class PowerManagerService extends SystemService
 
 	if (mSystemReady && mIsSafeCallTelephonyOffhook) {
 		telephonyManager_isOffhook = telephonyManager.isOffhook();
-		Slog.d(TAG, "isBeingKeptAwakeLocked: telephonyManager_isOffhook=" +
-			(telephonyManager_isOffhook ? "true" : "false"));
+		if (telephonyManager_isOffhook)
+			Slog.d(TAG, "isBeingKeptAwakeLocked: telephonyManager_isOffhook=true");
 	}
 
         return mStayOn
