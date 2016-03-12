@@ -41,6 +41,6 @@ LOCAL_C_INCLUDES += \
     $(JNI_H_INCLUDE) \
     $(LOCAL_PATH)/..
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code -Wno-unused-parameter
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code -Wno-unused-parameter
 
 include $(BUILD_STATIC_LIBRARY)

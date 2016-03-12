@@ -68,7 +68,7 @@ LOCAL_C_INCLUDES += \
     $(PV_INCLUDES) \
     $(JNI_H_INCLUDE)
 
-LOCAL_CFLAGS += -Wall -Werror -Wno-error=deprecated-declarations -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wno-error=deprecated-declarations -Wunused -Wunreachable-code
 
 LOCAL_MODULE:= libmedia_jni
 

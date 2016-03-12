@@ -18,6 +18,6 @@ LOCAL_SHARED_LIBRARIES :=  \
 
 LOCAL_MODULE_TAGS := tests
 
-LOCAL_CFLAGS += -Wall -Werror -Wno-error=deprecated-declarations -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wno-error=deprecated-declarations -Wunused -Wunreachable-code
 
 include $(BUILD_EXECUTABLE)
