@@ -142,7 +142,7 @@ void RenderProxy::initialize(const sp<Surface>& surface) {
     SETUP_TASK(initialize);
     args->context = mContext;
     args->surface = surface.get();
-    post(task);
+    postAndWait(task);
 }
 
 CREATE_BRIDGE2(updateSurface, CanvasContext* context, Surface* surface) {
