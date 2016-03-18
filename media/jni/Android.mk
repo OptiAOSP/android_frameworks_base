@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES := \
     libcamera_client \
     libmtp \
     libusbhost \
-    libjhead \
+    libhead \
     libexif \
     libstagefright_amrnb_common
 
