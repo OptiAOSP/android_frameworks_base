@@ -320,9 +320,8 @@ public class StorageNotification extends SystemUI {
         final VolumeRecord rec = mStorageManager.findRecordByUuid(vol.getFsUuid());
         final DiskInfo disk = vol.getDisk();
 
-        // Don't annoy when user dismissed in past.  (But make sure the disk is adoptable; we
-        // used to allow snoozing non-adoptable disks too.)
-        if (rec.isSnoozed() && disk.isAdoptable()) {
+        // Don't annoy
+        if (rec.isSnoozed()) {
             return null;
         }
 
@@ -344,6 +343,8 @@ public class StorageNotification extends SystemUI {
                     .build();
 
         } else {
+// Chrono: Should not reach here, but I'll comment out it just to make sure.
+/*
             final CharSequence title = disk.getDescription();
             final CharSequence text = mContext.getString(
                     R.string.ext_media_ready_notification_message, disk.getDescription());
@@ -365,6 +366,8 @@ public class StorageNotification extends SystemUI {
             }
 
             return builder.build();
+*/
+            return null;
         }
     }
 
