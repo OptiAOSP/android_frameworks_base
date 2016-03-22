@@ -512,10 +512,10 @@ int write_tarfile(const String8& packageName, const String8& domain,
     }
 
     int err = 0;
-    struct stat64 s;
-    if (lstat64(filepath.string(), &s) != 0) {
+    struct stat s;
+    if (lstat(filepath.string(), &s) != 0) {
         err = errno;
-        ALOGE("Error %d (%s) from lstat64(%s)", err, strerror(err), filepath.string());
+        ALOGE("Error %d (%s) from lstat(%s)", err, strerror(err), filepath.string());
         return err;
     }
 
@@ -1324,8 +1324,8 @@ static int
 get_mod_time(const char* filename, struct timeval times[2])
 {
     int err;
-    struct stat64 st;
-    err = stat64(filename, &st);
+    struct stat st;
+    err = stat(filename, &st);
     if (err != 0) {
         fprintf(stderr, "stat '%s' failed: %s\n", filename, strerror(errno));
         return errno;
