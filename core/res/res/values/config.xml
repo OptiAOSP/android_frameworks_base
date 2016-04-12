@@ -2710,4 +2710,6 @@
          is installed. -->
     <bool name="config_permissionReviewRequired">false</bool>
 
+    <!-- Configuartion to support SIM contact batch operation.-->
+    <bool name="config_sim_phonebook_batch_operation">true</bool>
 </resources>
