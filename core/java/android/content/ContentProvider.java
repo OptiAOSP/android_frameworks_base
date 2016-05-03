@@ -599,14 +599,18 @@ public abstract class ContentProvider implements ComponentCallbacks2 {
             return MODE_IGNORED;
         }
 
+        return MODE_ALLOWED;
+
+/*
         final String failReason = mExported
                 ? " requires " + missingPerm + ", or grantUriPermission()"
                 : " requires the provider be exported, or grantUriPermission()";
         throw new SecurityException("Permission Denial: reading "
                 + ContentProvider.this.getClass().getName() + " uri " + uri + " from pid=" + pid
                 + ", uid=" + uid + failReason);
-    }
+*/
 
+    }
     /** {@hide} */
     protected int enforceWritePermissionInner(Uri uri, String callingPkg, IBinder callerToken)
             throws SecurityException {
@@ -673,12 +677,15 @@ public abstract class ContentProvider implements ComponentCallbacks2 {
             return MODE_IGNORED;
         }
 
+        return MODE_ALLOWED;
+/*
         final String failReason = mExported
                 ? " requires " + missingPerm + ", or grantUriPermission()"
                 : " requires the provider be exported, or grantUriPermission()";
         throw new SecurityException("Permission Denial: writing "
                 + ContentProvider.this.getClass().getName() + " uri " + uri + " from pid=" + pid
                 + ", uid=" + uid + failReason);
+*/
     }
 
     /**

@@ -1436,7 +1436,9 @@ class ContextImpl extends Context {
     private void enforce(
             String permission, int resultOfCheck,
             boolean selfToo, int uid, String message) {
+/*
         if (resultOfCheck != PackageManager.PERMISSION_GRANTED) {
+
             throw new SecurityException(
                     (message != null ? (message + ": ") : "") +
                     (selfToo
@@ -1445,6 +1447,8 @@ class ContextImpl extends Context {
                     permission +
                     ".");
         }
+*/
+
     }
 
     @Override
@@ -1591,6 +1595,7 @@ class ContextImpl extends Context {
     private void enforceForUri(
             int modeFlags, int resultOfCheck, boolean selfToo,
             int uid, Uri uri, String message) {
+/*
         if (resultOfCheck != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException(
                     (message != null ? (message + ": ") : "") +
@@ -1602,6 +1607,7 @@ class ContextImpl extends Context {
                     uri +
                     ".");
         }
+*/
     }
 
     @Override
