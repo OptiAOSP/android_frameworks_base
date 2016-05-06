@@ -752,7 +752,7 @@ public final class BatteryService extends SystemService {
         }
 
         private boolean isHvdcpPresent() {
-            File mChargerTypeFile = new File("/sys/class/power_supply/usb/type");
+            File mChargerTypeFile = new File("/sys/class/power_supply/ab8500_usb/type");
             FileReader fileReader;
             BufferedReader br;
             String type;
