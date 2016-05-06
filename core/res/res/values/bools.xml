@@ -32,5 +32,5 @@
     <!-- Whether to enable softap extention feature -->
     <bool name="config_softap_extention">true</bool>
     <!-- Whether to enable auto connection feature -->
-    <bool name="wifi_autocon">false</bool>
+    <bool name="wifi_autocon">true</bool>
 </resources>
