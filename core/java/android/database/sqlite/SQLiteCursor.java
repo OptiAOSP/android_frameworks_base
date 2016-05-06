@@ -21,6 +21,7 @@ import android.database.CursorWindow;
 import android.database.DatabaseUtils;
 import android.os.StrictMode;
 import android.util.Log;
+import android.util.MutableBoolean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +51,16 @@ public class SQLiteCursor extends AbstractWindowedCursor {
 
     /** The number of rows in the cursor */
     private int mCount = NO_COUNT;
+
+    /** The number of rows we've found so far. Invariants:
+     *  1. mFound >= 0
+     *  2. mFound will decrease only when requery() is called
+     *  3. mFound == mCount iff mCount != NO_COUNT
+     */
+    private int mFound = 0;
+
+    /* Cached here for use in method implementations - don't use this to store "permanent" info. */
+    private final MutableBoolean mTmpBoolean = new MutableBoolean(false);
 
     /** The number of rows that can fit in the cursor window, 0 if unknown */
     private int mCursorWindowCapacity;
