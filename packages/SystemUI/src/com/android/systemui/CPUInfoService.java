@@ -300,9 +300,9 @@ public class CPUInfoService extends Service {
                     }
                     sb.deleteCharAt(sb.length()-1);
                     sb.append(";");
-                    if (mPowerProfilesSupported) {
+                    /*if (mPowerProfilesSupported) {
                         sb.append(mPowerManager.getCurrentPowerProfile());
-                    }
+                    }*/
                     mHandler.sendMessage(mHandler.obtainMessage(1, sb.toString()));
                 }
             } catch (InterruptedException e) {
