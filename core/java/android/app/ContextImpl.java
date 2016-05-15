@@ -1436,18 +1436,18 @@ class ContextImpl extends Context {
     private void enforce(
             String permission, int resultOfCheck,
             boolean selfToo, int uid, String message) {
-/*
-        if (resultOfCheck != PackageManager.PERMISSION_GRANTED) {
+	if (permission != "android.permission.WRITE_MEDIA_STORAGE") {
+	        if (resultOfCheck != PackageManager.PERMISSION_GRANTED) {
 
-            throw new SecurityException(
-                    (message != null ? (message + ": ") : "") +
-                    (selfToo
-                     ? "Neither user " + uid + " nor current process has "
-                     : "uid " + uid + " does not have ") +
-                    permission +
-                    ".");
-        }
-*/
+	            throw new SecurityException(
+        	            (message != null ? (message + ": ") : "") +
+        	            (selfToo
+                	     ? "Neither user " + uid + " nor current process has "
+                	     : "uid " + uid + " does not have ") +
+                	    permission +
+                	    ".");
+        	}
+	}
 
     }
 
@@ -1595,19 +1595,19 @@ class ContextImpl extends Context {
     private void enforceForUri(
             int modeFlags, int resultOfCheck, boolean selfToo,
             int uid, Uri uri, String message) {
-/*
-        if (resultOfCheck != PackageManager.PERMISSION_GRANTED) {
-            throw new SecurityException(
-                    (message != null ? (message + ": ") : "") +
-                    (selfToo
-                     ? "Neither user " + uid + " nor current process has "
-                     : "User " + uid + " does not have ") +
-                    uriModeFlagToString(modeFlags) +
-                    " permission on " +
-                    uri +
-                    ".");
-        }
-*/
+	/*
+	        if (resultOfCheck != PackageManager.PERMISSION_GRANTED) {
+	            throw new SecurityException(
+	                    (message != null ? (message + ": ") : "") +
+	                    (selfToo
+        	             ? "Neither user " + uid + " nor current process has "
+        	             : "User " + uid + " does not have ") +
+        	            uriModeFlagToString(modeFlags) +
+        	            " permission on " +
+        	            uri +
+        	            ".");
+        	}
+	*/
     }
 
     @Override
