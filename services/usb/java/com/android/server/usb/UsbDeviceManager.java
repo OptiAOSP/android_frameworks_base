@@ -333,7 +333,7 @@ public class UsbDeviceManager {
                 mCurrentFunctions = SystemProperties.get(USB_CONFIG_PROPERTY,
                         UsbManager.USB_FUNCTION_NONE);
                 if (UsbManager.USB_FUNCTION_NONE.equals(mCurrentFunctions)) {
-                    mCurrentFunctions = UsbManager.USB_FUNCTION_MTP;
+                    mCurrentFunctions = UsbManager.USB_FUNCTION_UMS;
                 }
                 mCurrentFunctionsApplied = mCurrentFunctions.equals(
                         SystemProperties.get(USB_STATE_PROPERTY));

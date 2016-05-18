@@ -289,13 +289,13 @@ public class UsbService extends IUsbManager.Stub {
     @Override
     public void setCurrentFunction(String function) {
         mContext.enforceCallingOrSelfPermission(android.Manifest.permission.MANAGE_USB, null);
-
+/*
         if (!isSupportedCurrentFunction(function)) {
             Slog.w(TAG, "Caller of setCurrentFunction() requested unsupported USB function: "
                     + function);
             function = UsbManager.USB_FUNCTION_NONE;
         }
-
+*/
         if (mDeviceManager != null) {
             mDeviceManager.setCurrentFunctions(function);
         } else {
