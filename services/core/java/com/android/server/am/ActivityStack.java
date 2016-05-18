@@ -4245,7 +4245,13 @@ final class ActivityStack {
                 // result of getRunningTasks(@link android.app.ActivityManager),
                 // it must not be effected by the change of system date and time.
                 // Its originally use System.currentTimeMillis.
-                ci.lastActiveTime = SystemClock.elapsedRealtime();
+                long currentTime = SystemClock.elapsedRealtime();
+                // only update lastActiveTime if the currentTime is greater.
+                // The current time becomes lesser if the system date is changed to past.
+                // This FIXes the recents app not launching issue.
+                if(ci.lastActiveTime < currentTime) {
+                    ci.lastActiveTime = currentTime;
+                }
                 topTask = false;
             }
 
