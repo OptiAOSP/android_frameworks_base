@@ -18,15 +18,12 @@ package android.database.sqlite;
 
 import android.database.CursorWindow;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteConnection.SQLiteContinuation;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 
-import android.util.MutableInt;
-
-import java.lang.ref.WeakReference;
-
-import static android.database.sqlite.SQLiteConnection.PreparedStatement;
+import android.util.MutableBoolean;
 /**
  * Provides a single client the ability to use a database.
  *
@@ -814,44 +811,40 @@ public final class SQLiteSession {
      * @param connectionFlags The connection flags to use if a connection must be
      * acquired by this operation.  Refer to {@link SQLiteConnectionPool}.
      * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
-     * @param seenRows Set to the number of rows that have been seen in this queryso far.  Might
-     * not be all rows in the result set unless <code>countAllRows</code> is true.
-     * @param client A client that will later be used in a queueClientDereferenceLocked() call
-     * @return A reference that will later be used in a queueClientDereferenceLocked() call
+     * @param exhausted will be set to true if the full result set was consumed - never set to false
+     * @param cont Continuation cookie: lets us keep statements alive; may speed up future fills.
+     * @return the number of rows that have been seen in this query so far. May not be all rows in
+     *         the result set unless <code>countAllRows</code> is true.
      *
      * @throws SQLiteException if an error occurs, such as a syntax error
      * or invalid number of bind arguments.
      * @throws OperationCanceledException if the operation was canceled.
      */
-    public WeakReference<PreparedStatement> executeForCursorWindow(String sql, Object[] bindArgs,
+    public int executeForCursorWindow(String sql, Object[] bindArgs,
             CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
-            int connectionFlags, CancellationSignal cancellationSignal,
-            MutableInt seenRows, WeakReference client) {
+            int connectionFlags, MutableBoolean exhausted, CancellationSignal cancellationSignal,
+            SQLiteContinuation cont) {
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }
-        if (window == null) {
-            throw new IllegalArgumentException("window must not be null.");
-        }
 
         if (executeSpecial(sql, bindArgs, connectionFlags, cancellationSignal)) {
-            window.clear();
-            seenRows.value = 0;
-            return null;
+            if (window != null) window.clear();
+            return 0;
         }
 
-        acquireConnection(sql, connectionFlags, cancellationSignal); // might throw
+        acquireConnection(sql, connectionFlags, cancellationSignal, cont); // might throw
         try {
             return mConnection.executeForCursorWindow(sql, bindArgs,
                     window, startPos, requiredPos, countAllRows,
-                    cancellationSignal, seenRows, client); // might throw
+                    exhausted, cancellationSignal, cont); // might throw
         } finally {
             releaseConnection(); // might throw
         }
     }
 
-    void releaseStmtRef(WeakReference<PreparedStatement> stmt, WeakReference client) {
-        mConnectionPool.releaseStmtRef(stmt, client, mConnection);
+    void discontinue(SQLiteContinuation cont) {
+        mConnectionPool.discontinue(cont, mConnection);
     }
 
     /**
@@ -902,11 +895,19 @@ public final class SQLiteSession {
 
     private void acquireConnection(String sql, int connectionFlags,
             CancellationSignal cancellationSignal) {
+        acquireConnection(sql, connectionFlags, cancellationSignal, null);
+    }
+
+    private void acquireConnection(String sql, int connectionFlags,
+            CancellationSignal cancellationSignal, SQLiteContinuation cont) {
         if (mConnection == null) {
             assert mConnectionUseCount == 0;
             mConnection = mConnectionPool.acquireConnection(sql, connectionFlags,
-                    cancellationSignal); // might throw
+                    cancellationSignal, cont); // might throw
             mConnectionFlags = connectionFlags;
+        } else if (cont != null) {
+            // this is normally done in pool.acquireConnection(), but since we didn't call it...
+            mConnectionPool.checkContinuation(mConnection, cont);
         }
         mConnectionUseCount += 1;
     }
