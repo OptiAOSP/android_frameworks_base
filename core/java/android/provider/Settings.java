@@ -1231,6 +1231,17 @@ public final class Settings {
     public static final String EXTRA_DO_NOT_DISTURB_MODE_MINUTES =
             "android.settings.extra.do_not_disturb_mode_minutes";
 
+    /**
+     * MediaScanner behavior on boot.
+     * 0 = enabled
+     * 1 = ask (notification)
+     * 2 = disabled
+     * @hide
+     */
+    public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot";
+
+
+
     private static final String JID_RESOURCE_PREFIX = "android";
 
     public static final String AUTHORITY = "settings";
