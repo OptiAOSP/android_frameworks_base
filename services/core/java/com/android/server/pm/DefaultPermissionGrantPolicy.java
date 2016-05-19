@@ -633,7 +633,7 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(gmscorePackage, STORAGE_PERMISSIONS, userId);
             }
 
-            mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
+            mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId); }
         }
     }
 
