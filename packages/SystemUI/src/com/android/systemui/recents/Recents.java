@@ -551,12 +551,14 @@ public class Recents extends SystemUI
         // have the right thumbnail bounds to animate to.
         // Note: We have to reload the widget id before we get the task stack bounds below
 		if (mBootCompleted == true) {
+/*
         	if (mConfig.mRecentsSearchbar &&
                 mSystemServicesProxy.getOrBindSearchAppWidget(mContext, mAppWidgetHost) != null) {
             mConfig.getSearchBarBounds(mWindowRect.width(), mWindowRect.height(),
                     mStatusBarHeight, searchBarBounds);
 			}
-        }
+ */
+	}
         mConfig.getAvailableTaskStackBounds(mWindowRect.width(), mWindowRect.height(),
                 mStatusBarHeight, (mConfig.hasTransposedNavBar ? mNavBarWidth : 0), searchBarBounds,
                 mTaskStackBounds);
