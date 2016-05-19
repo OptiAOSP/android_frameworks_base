@@ -4322,18 +4322,6 @@ public final class Settings {
          */
         public static final String IN_CALL_PROXIMITY_SENSOR = "in_call_proximity_sensor";
 
-        /**
-         * Enable weather display in header view
-         * @hide
-         */
-        public static final String STATUS_BAR_HEADER_WEATHER = "status_bar_header_weather";
-
-        /**
-         * icon pack to use for weather condition images
-         * @hide
-         */
-        public static final String STATUS_BAR_WEATHER_ICON_PACK = "status_bar_weather_icon_pack";
-
        /**
         * MediaScanner behavior on boot.
         * 0 = enabled
