@@ -3169,11 +3169,6 @@ public final class Settings {
         public static final String NOTIFICATION_LIGHT_PULSE_DEFAULT_COLOR =
                 "notification_light_pulse_default_color";
 
-        /**
-         * Force expanded notifications on all apps that support it.
-         * @hide
-         */
-        public static final String FORCE_EXPANDED_NOTIFICATIONS = "force_expanded_notifications";
 
         /**
          * Whether to show Brightness Icon On Brightness Slider
@@ -3526,11 +3521,6 @@ public final class Settings {
          */
         public static final String RECENTS_SHOW_SEARCH_BAR = "recents_show_search_bar";
 
-        /**
-         * Whether to display recents in full screen
-         * @hide
-         */
-        public static final String RECENTS_FULL_SCREEN = "recents_full_screen";
 
         /**
          * I am the lolrus.
@@ -4246,19 +4236,6 @@ public final class Settings {
          */
         public static final String VOLUME_KEYS_CONTROL_RING_STREAM =
                 "volume_keys_control_ring_stream";
-
-        /**
-         * Whether to display recents in full screen
-         * @hide
-         */
-        public static final String RECENTS_FULL_SCREEN = "recents_full_screen";
-
-        /**
-         * Whether to enable status and navigation bar color in battery saver mode.
-         *
-         * @hide
-         */
-        public static final String BATTERY_SAVER_MODE_COLOR = "battery_save_mode_color";
 
         /**
          * Enable/Disable screenshot sound
@@ -8837,7 +8814,6 @@ public final class Settings {
          * @hide
          */
         public static final String POLICY_CONTROL = "policy_control";
-        public static final String POLICY_CONTROL_SELECTED = "policy_control_selected";
 
         /**
          * Defines global runtime overrides to window policy style.
