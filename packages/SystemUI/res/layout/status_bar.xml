@@ -82,7 +82,7 @@
                     android:visibility="gone"
                     android:singleLine="true"
                     />
-
+<!--
                 <TextView
                     android:id="@+id/left_weather_temp"
                     android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
                     android:paddingStart="2dp"
                     android:paddingEnd="4dp"
                     android:visibility="gone"
-                    />
+                    /> -->
 
                 <com.android.systemui.statusbar.phone.IconMerger android:id="@+id/notificationIcons"
                     android:layout_width="match_parent"
@@ -116,7 +116,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
-
+<!--
             <TextView
                 android:id="@+id/weather_temp"
                 android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                 android:paddingStart="2dp"
                 android:paddingEnd="4dp"
                 android:visibility="gone" />
-
+-->
             <com.android.systemui.statusbar.policy.NetworkTraffic
                 android:id="@+id/networkTraffic"
                 android:layout_width="wrap_content"
