@@ -64,7 +64,6 @@ import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.MediaSessionManager;
 import android.media.session.PlaybackState;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -329,7 +328,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mWeatherTempStyle;
 
     // Status bar carrier
-    private boolean mShowStatusBarCarrier;
+    private boolean mShowStatusBarCarrier; 
+    LinearLayout mCenterClockLayout;
+
+    private boolean mShowClock;
+    private int mClockLocation;
 
     // expanded notifications
     NotificationPanelView mNotificationPanel; // the sliding/resizing panel within the notification window
@@ -432,17 +435,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.BATTERY_SAVER_MODE_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_ROTATION),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CARRIER), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BATTERY_SAVER_MODE_COLOR),
                     false, this, UserHandle.USER_ALL);
             update();
@@ -460,39 +452,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mBatterySaverWarningColor = mContext.getResources()
                                 .getColor(com.android.internal.R.color.battery_saver_mode_color);
                     }
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE))) {
-                    mWeatherTempStyle = Settings.System.getIntForUser(
-                        mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE, 0,
-                        UserHandle.USER_CURRENT);
-                updateTempView();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_ROTATION))
-                    || uri.equals(Settings.System.getUriFor(
-                    Settings.System.ACCELEROMETER_ROTATION))) {
-                mStatusBarWindowManager.updateKeyguardScreenRotation();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.BATTERY_SAVER_MODE_COLOR))) {
-                    mBatterySaverWarningColor = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.System.BATTERY_SAVER_MODE_COLOR, -2,
-                            UserHandle.USER_CURRENT);
-                    if (mBatterySaverWarningColor == -2) {
-                        mBatterySaverWarningColor = mContext.getResources()
-                                .getColor(com.android.internal.R.color.battery_saver_mode_color);
-                    }
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.ENABLE_TASK_MANAGER))) {
-                    mShowTaskManager = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.System.ENABLE_TASK_MANAGER,
-                            0, UserHandle.USER_CURRENT) == 1;
-                            Helpers.restartSystemUI();
-                            updateRowStates();
-                            updateSpeedbump();
-                            updateClearAll();
-                            updateEmptyShadeView();
             }
 
             update();
@@ -533,34 +492,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    private void updateWeatherTextState(String temp) {
-        if (mWeatherTempView != null) {
-            if (mWeatherTempState == 0 || TextUtils.isEmpty(temp)) {
-                mWeatherTempView.setVisibility(View.GONE);
-                return;
-            }
-            if (mWeatherTempState == 1) {
-                SpannableString span = new SpannableString(temp);
-                span.setSpan(new RelativeSizeSpan(0.7f), temp.length() - 1, temp.length(), 0);
-                mWeatherTempView.setText(span);
-            } else if (mWeatherTempState == 2) {
-                mWeatherTempView.setText(temp.substring(0, temp.length() - 1));
-            }
-            mWeatherTempView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void updateTempView() {
-        if (mWeatherTempView != null) {
-            mWeatherTempView.setVisibility(View.GONE);
-            if (mWeatherTempStyle == 0) {
-                mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.weather_temp);
-            } else {
-                mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.left_weather_temp);
-            }
-            updateWeatherTextState(mWeatherController.getWeatherInfo().temp);
-        }
-    }
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     private boolean mUserSetup = false;
@@ -1102,26 +1033,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mHandler);
         }
         mWeatherController = new WeatherControllerImpl(mContext);
-        if (mWeatherController == null) {
-            mWeatherController = new WeatherControllerImpl(mContext);
-            mWeatherController.addCallback(new WeatherController.Callback() {
-                @Override
-                public void onWeatherChanged(WeatherInfo temp) {
-                    updateWeatherTextState(temp.temp);
-                }
-            });
-        }
-        updateWeatherTextState(mWeatherController.getWeatherInfo().temp);
-
-        mWeatherTempStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE, 0, UserHandle.USER_CURRENT);
-        if (mWeatherTempStyle == 0) {
-            mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.weather_temp);
-        } else {
-            mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.left_weather_temp);
-        }
-        updateTempView();
-
         mKeyguardUserSwitcher = new KeyguardUserSwitcher(mContext,
                 (ViewStub) mStatusBarWindow.findViewById(R.id.keyguard_user_switcher),
                 mKeyguardStatusBar, mNotificationPanel, mUserSwitcherController);
