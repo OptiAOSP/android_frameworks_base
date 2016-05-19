@@ -36,8 +36,6 @@
          config to 7. -->
     <integer name="config_deviceHardwareKeys">0</integer>
 
-    <integer name="config_backKillTimeout">2000</integer>
-
     <string-array translatable="false" name="config_rebootActionsList">
         <item>reboot</item>
         <item>reboot_recovery</item>
