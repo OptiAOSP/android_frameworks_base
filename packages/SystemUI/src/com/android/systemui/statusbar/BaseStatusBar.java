@@ -2553,5 +2553,4 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
         }
     }
->>>>>>> 2e79e35... PIE 3.0 (1/2)
 }
