@@ -514,7 +514,7 @@ public class PackageManagerService extends IPackageManager.Stub {
     boolean mFoundPolicyFile;
 
     // If a recursive restorecon of /data/data/<pkg> is needed.
-    private boolean mShouldRestoreconData = false;
+    private boolean mShouldRestoreconData = SELinuxMMAC.shouldRestorecon();
 
     public static final class SharedLibraryEntry {
         public final String path;
@@ -1932,7 +1932,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                         new SharedLibraryEntry(libConfig.valueAt(i), null));
             }
 
-            // mFoundPolicyFile = SELinuxMMAC.readInstallPolicy();
+            mFoundPolicyFile = SELinuxMMAC.readInstallPolicy();
 
             mRestoredSettings = mSettings.readLPw(this, sUserManager.getUsers(false),
                     mSdkVersion, mOnlyCore);
@@ -6847,6 +6847,10 @@ public class PackageManagerService extends IPackageManager.Stub {
                 // will take care of the system apps by updating all of their
                 // library paths after the scan is done.
                 updateSharedLibrariesLPw(pkg, null);
+            }
+
+            if (mFoundPolicyFile) {
+                SELinuxMMAC.assignSeinfoValue(pkg);
             }
 
             pkg.applicationInfo.uid = pkgSetting.appId;
@@ -15630,7 +15634,7 @@ public class PackageManagerService extends IPackageManager.Stub {
     public void scanAvailableAsecs() {
         updateExternalMediaStatusInner(true, false, false);
         if (mShouldRestoreconData) {
-            //SELinuxMMAC.setRestoreconDone();
+            SELinuxMMAC.setRestoreconDone();
             mShouldRestoreconData = false;
         }
     }
