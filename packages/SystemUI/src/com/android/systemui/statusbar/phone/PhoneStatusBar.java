@@ -452,16 +452,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.BATTERY_SAVER_MODE_COLOR))) {
-                    mBatterySaverWarningColor = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.System.BATTERY_SAVER_MODE_COLOR, 1,
-                            UserHandle.USER_CURRENT);
-                    if (mBatterySaverWarningColor != 0) {
-                        mBatterySaverWarningColor = mContext.getResources()
-                                .getColor(com.android.internal.R.color.battery_saver_mode_color);
-                    }
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE))) {
                     mWeatherTempStyle = Settings.System.getIntForUser(
                         mContext.getContentResolver(),
@@ -490,54 +480,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 updateTempView();
             }
 
-            if (mNavigationBarView != null) {
-                boolean navLeftInLandscape = Settings.System.getInt(resolver,
-                        Settings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0) == 1;
-                mNavigationBarView.setLeftInLandscape(navLeftInLandscape);
-
-            }
-
-            mShowStatusBarCarrier = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_CARRIER, 0, mCurrentUserId) == 1;
-            showStatusBarCarrierLabel(mShowStatusBarCarrier);	
-
-
             mHeader.settingsChanged();
-                updateWeatherTextState(mWeatherController.getWeatherInfo().temp);
-        }
-    }
-
-    private void updateWeatherTextState(String temp) {
-        if (mWeatherTempView != null) {
-            if (mWeatherTempState == 0 || TextUtils.isEmpty(temp)) {
-                mWeatherTempView.setVisibility(View.GONE);
-                return;
-            }
-            if (mWeatherTempState == 1) {
-                SpannableString span = new SpannableString(temp);
-                span.setSpan(new RelativeSizeSpan(0.7f), temp.length() - 1, temp.length(), 0);
-                mWeatherTempView.setText(span);
-            } else if (mWeatherTempState == 2) {
-                mWeatherTempView.setText(temp.substring(0, temp.length() - 1));
-            }
-            mWeatherTempView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void updateWeatherTextState(String temp) {
-        if (mWeatherTempView != null) {
-            if (mWeatherTempState == 0 || TextUtils.isEmpty(temp)) {
-                mWeatherTempView.setVisibility(View.GONE);
-                return;
-            }
-            if (mWeatherTempState == 1) {
-                SpannableString span = new SpannableString(temp);
-                span.setSpan(new RelativeSizeSpan(0.7f), temp.length() - 1, temp.length(), 0);
-                mWeatherTempView.setText(span);
-            } else if (mWeatherTempState == 2) {
-                mWeatherTempView.setText(temp.substring(0, temp.length() - 1));
-            }
-            mWeatherTempView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -551,19 +494,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             updateWeatherTextState(mWeatherController.getWeatherInfo().temp);
         }
-
-        if (mWeatherTempState == 0 || TextUtils.isEmpty(temp)) {
-            mWeatherTempView.setVisibility(View.GONE);
-            return;
-        }
-        if (mWeatherTempState == 1) {
-            SpannableString span = new SpannableString(temp);
-            span.setSpan(new RelativeSizeSpan(0.7f), temp.length() - 1, temp.length(), 0);
-            mWeatherTempView.setText(span);
-        } else if (mWeatherTempState == 2) {
-            mWeatherTempView.setText(temp.substring(0, temp.length() - 1));
-        }
-        mWeatherTempView.setVisibility(View.VISIBLE);
     }
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
