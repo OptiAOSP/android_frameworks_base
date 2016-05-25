@@ -1264,28 +1264,4 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             }
         }
     }
-
-    /**
-     * makes text more readable on light backgrounds
-     */
-    private void enableTextShadow() {
-        mTime.setShadowLayer(5, 0, 0, Color.BLACK);
-        mAmPm.setShadowLayer(5, 0, 0, Color.BLACK);
-        mDateCollapsed.setShadowLayer(5, 0, 0, Color.BLACK);
-        mDateExpanded.setShadowLayer(5, 0, 0, Color.BLACK);
-        mBatteryLevel.setShadowLayer(5, 0, 0, Color.BLACK);
-        mAlarmStatus.setShadowLayer(5, 0, 0, Color.BLACK);
-    }
-
-    /**
-     * default
-     */
-    private void disableTextShadow() {
-        mTime.setShadowLayer(0, 0, 0, Color.BLACK);
-        mAmPm.setShadowLayer(0, 0, 0, Color.BLACK);
-        mDateCollapsed.setShadowLayer(0, 0, 0, Color.BLACK);
-        mDateExpanded.setShadowLayer(0, 0, 0, Color.BLACK);
-        mBatteryLevel.setShadowLayer(0, 0, 0, Color.BLACK);
-        mAlarmStatus.setShadowLayer(0, 0, 0, Color.BLACK);
-    }
 }
