@@ -119,4 +119,15 @@
 
     <!-- QuickSettings tiles -->
     <string name="quick_settings_usb_tether_label">USB tethering</string>
+
+     <!-- PA Pie controls -->
+     <string name="pie_date_format">ccc, dd MMM yyyy</string>
+     <string name="pie_hour_format_12">hh:mm</string>
+     <string name="pie_hour_format_24">HH:mm</string>
+     <string name="pie_am_pm">a</string>
+
+     <!-- Long-press back kill application -->
+     <string name="app_killed_message">Application killed</string>
+
+
 </resources>

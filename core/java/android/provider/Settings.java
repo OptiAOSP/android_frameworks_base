@@ -3717,12 +3717,6 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
 
         /**
-         * icon pack to use for weather condition images
-         * @hide
-         */
-        public static final String STATUS_BAR_WEATHER_ICON_PACK = "status_bar_weather_icon_pack";
-
-        /**
          * Whether to show the weather info on the lock screen
          * @hide
          */
