@@ -103,6 +103,26 @@ public class TvStatusBar extends BaseStatusBar {
     public void notificationLightPulse(int argb, int onMillis, int offMillis) {
     }
 
+    @Override // CommandQueue
+    public void setAutoRotate(boolean enabled) {
+    }
+
+    @Override // CommandQueue
+    public void toggleScreenshot() {
+    }
+
+    @Override // CommandQueue
+    public void toggleKillApp() {
+    }
+
+    @Override // CommandQueue
+    public void toggleLastApp() {
+    }
+
+    @Override // CommandQueue
+    public void toggleOrientationListener(boolean enabled) {
+    }
+
     @Override
     protected void setAreThereNotifications() {
     }

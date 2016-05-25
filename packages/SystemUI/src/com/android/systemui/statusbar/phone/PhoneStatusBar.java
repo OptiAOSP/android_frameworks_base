@@ -2748,6 +2748,29 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    @Override // CommandQueue
+    public void toggleScreenshot() {
+    }
+
+    @Override // CommandQueue
+    public void toggleKillApp() {
+    }
+
+    @Override // CommandQueue
+    public void toggleLastApp() {
+    }
+
+    @Override // CommandQueue
+    public void toggleOrientationListener(boolean enabled) {
+    }
+
+    @Override  // CommandQueue
+    public void setAutoRotate(boolean enabled) {
+        Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.ACCELEROMETER_ROTATION,
+                enabled ? 1 : 0);
+    }
+
     private int computeBarMode(int oldVis, int newVis, BarTransitions transitions,
             int transientFlag, int translucentFlag) {
         final int oldMode = barMode(oldVis, transientFlag, translucentFlag);
