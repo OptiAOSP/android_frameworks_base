@@ -1286,6 +1286,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 hideWeatherDetailed();
             }
         }
+    }
 
     /**
      * makes text more readable on light backgrounds
