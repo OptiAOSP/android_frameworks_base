@@ -102,6 +102,15 @@ static jlong android_os_SystemClock_elapsedRealtimeNano(JNIEnv* env,
 }
 
 /*
+ * public static native long elapsedRealtimeNano1();
+ */
+static jlong android_os_SystemClock_elapsedRealtimeNano1(JNIEnv* env,
+        jobject clazz)
+{
+    return (jlong)elapsedRealtimeNano1();
+}
+
+/*
  * JNI registration.
  */
 static JNINativeMethod gMethods[] = {
@@ -118,6 +127,8 @@ static JNINativeMethod gMethods[] = {
             (void*) android_os_SystemClock_currentTimeMicro },
     { "elapsedRealtimeNanos",      "()J",
             (void*) android_os_SystemClock_elapsedRealtimeNano },
+    { "elapsedRealtimeNanos1",      "()J",
+            (void*) android_os_SystemClock_elapsedRealtimeNano1 },
 };
 int register_android_os_SystemClock(JNIEnv* env)
 {
