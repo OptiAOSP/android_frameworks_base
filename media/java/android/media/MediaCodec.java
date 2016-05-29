@@ -1655,6 +1655,7 @@ final public class MediaCodec {
     }
 
     private static boolean mUseGoogleH264Encoder = false;
+    private static boolean mUseFFmpegH264Encoder = false;
     private static boolean mUseFFmpegH264Decoder = false;
 
     private MediaCodec(
@@ -1680,9 +1681,15 @@ final public class MediaCodec {
          */
 
         mUseGoogleH264Encoder = SystemProperties.getBoolean("ste.use_google_h264_encoder", false);
+        mUseFFmpegH264Encoder = SystemProperties.getBoolean("ste.use_ffmpeg_h264_encoder", false);
         mUseFFmpegH264Decoder = SystemProperties.getBoolean("ste.use_ffmpeg_h264_decoder", false);
 
-        if (name.equals("video/avc") && encoder && mUseGoogleH264Encoder) {
+
+        if (name.equals("video/avc") && encoder && mUseFFmpegH264Encoder) {
+                nameIsType = false;
+                name = "OMX.ffmpeg.h264.encoder";
+                Log.i("MediaCodec"," force use " + name + " isEncoder=" + String.valueOf(encoder));
+        } else if (name.equals("video/avc") && encoder && mUseGoogleH264Encoder) {
                 nameIsType = false;
                 name = "OMX.google.h264.encoder";
                 Log.i("MediaCodec"," force use " + name + " isEncoder=" + String.valueOf(encoder));
