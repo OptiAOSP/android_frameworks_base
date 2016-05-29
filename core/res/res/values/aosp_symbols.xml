@@ -39,10 +39,4 @@
     <!-- Blur effects -->
     <java-symbol type="bool" name="config_ui_blur_enabled" />
 
-
-
-    <!-- A list of pre-installed applications that will be treated as carrier apps,
-         regardless of the SIM inserted. These applications will be granted phone and
-         location permissions, and must obtain user content through other means -->
-    <string-array name="config_enabledPreinstalledCarrierApps" translatable="false" />
 </resources>
