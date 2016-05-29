@@ -57,6 +57,20 @@ public final class InCallAdapter {
     }
 
     /**
+     * Instructs Telecom to answer the specified call.
+     *
+     * @param callId The identifier of the call to answer.
+     * @param videoState The video state in which to answer the call.
+     * @param callWaitingResponseType Response type for call waiting.
+     */
+    public void answerCall(String callId, int videoState, int callWaitingResponseType) {
+        try {
+            mAdapter.answerCallWithCallWaitingResponse(callId, videoState, callWaitingResponseType);
+        } catch (RemoteException e) {
+        }
+    }
+
+    /**
      * Instructs Telecom to reject the specified call.
      *
      * @param callId The identifier of the call to reject.
@@ -240,6 +254,13 @@ public final class InCallAdapter {
         }
     }
 
+    public void transferCall(String callId) {
+        try {
+            mAdapter.transferCall(callId);
+        } catch (RemoteException ignored) {
+        }
+    }
+
     /**
      * Instructs Telecom to swap the child calls of the specified conference call.
      */
@@ -271,6 +292,19 @@ public final class InCallAdapter {
         try {
             mAdapter.turnOffProximitySensor(screenOnImmediately);
         } catch (RemoteException ignored) {
+        }
+    }
+
+    /**
+     * Instructs Telecomm to switch to other active subscripion
+     *
+     * @param subid switch to subscription denoted by subId
+     * {@hide}
+     */
+    public void switchToOtherActiveSub(String subId) {
+        try {
+            mAdapter.switchToOtherActiveSub(subId);
+        } catch (RemoteException e) {
         }
     }
 }

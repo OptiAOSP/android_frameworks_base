@@ -207,13 +207,43 @@ public final class Call {
         public static final int CAPABILITY_CAN_PAUSE_VIDEO = 0x00100000;
 
         /**
+         * Call has voice privacy capability.
+         * @hide
+         */
+        public static final int CAPABILITY_VOICE_PRIVACY = 0x00400000;
+
+        /**
+         * Local device supports downgrading a video call to a voice-only call.
+         * @hide
+         */
+        public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL = 0x00800000;
+
+        /**
+         * Remote device supports downgrading a video call to a voice-only call.
+         * @hide
+         */
+        public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE = 0x01000000;
+
+        /**
+         * Add participant in an active or conference call option
+         * @hide
+         */
+        public static final int CAPABILITY_ADD_PARTICIPANT = 0x02000000;
+
+        /**
+         * Remote device supports call transfers.
+         * @hide
+         */
+        public static final int CAPABILITY_SUPPORTS_TRANSFER = 0x04000000;
+
+        /**
          * Call sends responses through connection.
          * @hide
          */
-        public static final int CAPABILITY_CAN_SEND_RESPONSE_VIA_CONNECTION = 0x00400000;
+        public static final int CAPABILITY_CAN_SEND_RESPONSE_VIA_CONNECTION = 0x08000000;
 
         //******************************************************************************************
-        // Next CAPABILITY value: 0x00800000
+        // Next CAPABILITY value: 0x10000000
         //******************************************************************************************
 
         /**
@@ -242,8 +272,38 @@ public final class Call {
          */
         public static final int PROPERTY_HIGH_DEF_AUDIO = 0x00000010;
 
+        /**
+         * Whether the call was forwarded from another party (GSM only)
+         * @hide
+         */
+        public static final int PROPERTY_WAS_FORWARDED = 0x00000020;
+
+        /**
+         * Whether the call is held remotely
+         * @hide
+         */
+        public static final int PROPERTY_HELD_REMOTELY = 0x00000040;
+
+        /**
+         * Whether the dialing state is waiting for the busy remote side
+         * @hide
+         */
+        public static final int PROPERTY_DIALING_IS_WAITING = 0x00000080;
+
+        /**
+         * Whether an additional call came in and was forwarded while the call was active
+         * @hide
+         */
+        public static final int PROPERTY_ADDITIONAL_CALL_FORWARDED = 0x00000100;
+
+        /**
+         * Whether incoming calls are barred at the remote side
+         * @hide
+         */
+        public static final int PROPERTY_REMOTE_INCOMING_CALLS_BARRED = 0x00000200;
+
         //******************************************************************************************
-        // Next PROPERTY value: 0x00000020
+        // Next PROPERTY value: 0x00000400
         //******************************************************************************************
 
         private final Uri mHandle;
@@ -328,6 +388,12 @@ public final class Call {
             if (can(capabilities, CAPABILITY_SUPPORTS_VT_REMOTE_TX)) {
                 builder.append(" CAPABILITY_SUPPORTS_VT_REMOTE_TX");
             }
+            if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL)) {
+                builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL");
+            }
+            if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE)) {
+                builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE");
+            }
             if (can(capabilities, CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL)) {
                 builder.append(" CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL");
             }
@@ -339,6 +405,15 @@ public final class Call {
             }
             if (can(capabilities, CAPABILITY_CAN_PAUSE_VIDEO)) {
                 builder.append(" CAPABILITY_CAN_PAUSE_VIDEO");
+            }
+            if (can(capabilities, CAPABILITY_VOICE_PRIVACY)) {
+                builder.append(" CAPABILITY_VOICE_PRIVACY");
+            }
+            if (can(capabilities, CAPABILITY_ADD_PARTICIPANT)) {
+                builder.append(" CAPABILITY_ADD_PARTICIPANT");
+            }
+            if (can(capabilities, CAPABILITY_SUPPORTS_TRANSFER)) {
+                builder.append(" CAPABILITY_SUPPORTS_TRANSFER");
             }
             builder.append("]");
             return builder.toString();
@@ -389,6 +464,22 @@ public final class Call {
             if (hasProperty(properties, PROPERTY_EMERGENCY_CALLBACK_MODE)) {
                 builder.append(" PROPERTY_EMERGENCY_CALLBACK_MODE");
             }
+            if (hasProperty(properties, PROPERTY_WAS_FORWARDED)) {
+                builder.append(" PROPERTY_WAS_FORWARDED");
+            }
+            if (hasProperty(properties, PROPERTY_HELD_REMOTELY)) {
+                builder.append(" PROPERTY_HELD_REMOTELY");
+            }
+            if (hasProperty(properties, PROPERTY_DIALING_IS_WAITING)) {
+                builder.append(" PROPERTY_DIALING_IS_WAITING");
+            }
+            if (hasProperty(properties, PROPERTY_ADDITIONAL_CALL_FORWARDED)) {
+                builder.append(" PROPERTY_ADDITIONAL_CALL_FORWARDED");
+            }
+            if (hasProperty(properties, PROPERTY_REMOTE_INCOMING_CALLS_BARRED)) {
+                builder.append(" PROPERTY_REMOTE_INCOMING_CALLS_BARRED");
+            }
+
             builder.append("]");
             return builder.toString();
         }
@@ -701,6 +792,28 @@ public final class Call {
     private Details mDetails;
 
     /**
+      * when mIsActiveSub True indicates this call belongs to active subscription
+      * Calls belonging to active subscription are shown to user.
+      */
+    private boolean mIsActiveSub = false;
+
+    /**
+     * Set this call object as active subscription.
+     * @hide
+     */
+    public void setActive() {
+        mIsActiveSub = true;
+    }
+
+    /**
+     *  return if this call object belongs to active subscription.
+     * @hide
+     */
+    public boolean isActive() {
+        return mIsActiveSub;
+    }
+
+    /**
      * Obtains the post-dial sequence remaining to be emitted by this {@code Call}, if any.
      *
      * @return The remaining post-dial sequence, or {@code null} if there is no post-dial sequence
@@ -716,6 +829,16 @@ public final class Call {
      */
     public void answer(int videoState) {
         mInCallAdapter.answerCall(mTelecomCallId, videoState);
+    }
+
+    /**
+     * Instructs this {@link #STATE_RINGING} {@code Call} to answer.
+     * @param videoState The video state in which to answer the call.
+     * @param callWaitingResponseType Type of response for call waiting
+     * @hide
+     */
+    public void answer(int videoState, int callWaitingResponseType) {
+        mInCallAdapter.answerCall(mTelecomCallId, videoState, callWaitingResponseType);
     }
 
     /**
@@ -827,6 +950,15 @@ public final class Call {
      */
     public void mergeConference() {
         mInCallAdapter.mergeConference(mTelecomCallId);
+    }
+
+    /**
+     * Instructs this {@code Call} to connect the current active call and the call on hold.
+     * The current call will then disconnect.  See {@link Details#CAPABILITY_SUPPORTS_TRANSFER}.
+     * @hide
+     */
+    public void transferCall() {
+        mInCallAdapter.transferCall(mTelecomCallId);
     }
 
     /**
@@ -990,11 +1122,22 @@ public final class Call {
     }
 
     /** {@hide} */
-    Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter) {
+    Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, boolean isActiveSub) {
         mPhone = phone;
         mTelecomCallId = telecomCallId;
         mInCallAdapter = inCallAdapter;
         mState = STATE_NEW;
+        mIsActiveSub = isActiveSub;
+    }
+
+    /** {@hide} */
+    Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, int state,
+             boolean isActiveSub) {
+        mPhone = phone;
+        mTelecomCallId = telecomCallId;
+        mInCallAdapter = inCallAdapter;
+        mState = state;
+        mIsActiveSub = isActiveSub;
     }
 
     /** {@hide} */
@@ -1039,6 +1182,7 @@ public final class Call {
                 && !parcelableCall.getCannedSmsResponses().isEmpty()) {
             mCannedTextResponses =
                     Collections.unmodifiableList(parcelableCall.getCannedSmsResponses());
+            cannedTextResponsesChanged = true;
         }
 
         boolean videoCallChanged = parcelableCall.isVideoCallProviderChanged() &&
@@ -1048,9 +1192,10 @@ public final class Call {
         }
 
         int state = parcelableCall.getState();
-        boolean stateChanged = mState != state;
+        boolean stateChanged = (mState != state) || (mIsActiveSub != parcelableCall.isActive());
         if (stateChanged) {
             mState = state;
+            mIsActiveSub = parcelableCall.isActive();
         }
 
         String parentId = parcelableCall.getParentCallId();
@@ -1125,6 +1270,11 @@ public final class Call {
             fireStateChanged(mState);
             fireCallDestroyed();
         }
+    }
+
+    /** {@hide} */
+    final void onMergeFailed() {
+        fireStateChanged(mState);
     }
 
     private void fireStateChanged(final int newState) {

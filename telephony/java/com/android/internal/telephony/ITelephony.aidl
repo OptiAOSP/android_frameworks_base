@@ -545,16 +545,6 @@ interface ITelephony {
     int getLteOnGsmMode();
 
     /**
-     * Adds a protected sms address to the {@link Settings.Secure.PROTECTED_SMS_ADDRESSES}
-     */
-    void addProtectedSmsAddress(String address);
-
-    /**
-     * Revokes a protected sms address from {@link Settings.Secure.PROTECTED_SMS_ADDRESSES}
-     */
-    boolean revokeProtectedSmsAddress(String address);
-
-    /**
      * get default sim
      * @return sim id
      */
@@ -571,17 +561,6 @@ interface ITelephony {
     IccOpenLogicalChannelResponse iccOpenLogicalChannel(String AID);
 
     /**
-     * Opens a logical channel to the ICC card.
-     *
-     * Input parameters equivalent to TS 27.007 AT+CCHO command.
-     *
-     * @param p2 P2 parameter
-     * @param AID Application id.
-     * @return an IccOpenLogicalChannelResponse object.
-     */
-    IccOpenLogicalChannelResponse iccOpenLogicalChannelWithP2(String AID, byte p2);
-
-    /**
      * Opens a logical channel to the ICC card for a particular subId.
      *
      * Input parameters equivalent to TS 27.007 AT+CCHO command.
@@ -591,16 +570,6 @@ interface ITelephony {
      * @return an IccOpenLogicalChannelResponse object.
      */
     IccOpenLogicalChannelResponse iccOpenLogicalChannelUsingSubId(int subId, String AID);
-
-    /**
-     * Opens a logical channel to the ICC card for a particular subID
-     *
-     * @param subId user preferred subId.
-     * @param p2 P2 parameter
-     * @param AID Application id. See ETSI 102.221 and 101.220
-     */
-    IccOpenLogicalChannelResponse iccOpenLogicalChannelUsingSubIdWithP2(int subId,
-        String AID, byte p2);
 
     /**
      * Closes a previously opened logical channel to the ICC card.
