@@ -53,6 +53,7 @@ public class SignalStrength implements Parcelable {
     public static final int INVALID = 0x7FFFFFFF;
 
     private static final int RSRP_THRESH_TYPE_STRICT = 0;
+    private static final int RSRP_THRESH_TYPE_CUSTOM = 2;
     private static final int[] RSRP_THRESH_STRICT = new int[] {-140, -115, -105, -95, -85, -44};
     private static final int[] RSRP_THRESH_LENIENT = new int[] {-140, -128, -118, -108, -98, -44};
 
@@ -147,11 +148,10 @@ public class SignalStrength implements Parcelable {
             int cdmaDbm, int cdmaEcio,
             int evdoDbm, int evdoEcio, int evdoSnr,
             int lteSignalStrength, int lteRsrp, int lteRsrq, int lteRssnr, int lteCqi,
-            int tdScdmaRscp, boolean gsmFlag) {
+            boolean gsmFlag) {
         initialize(gsmSignalStrength, gsmBitErrorRate, cdmaDbm, cdmaEcio,
                 evdoDbm, evdoEcio, evdoSnr, lteSignalStrength, lteRsrp,
                 lteRsrq, lteRssnr, lteCqi, gsmFlag);
-        mTdScdmaRscp = tdScdmaRscp;
     }
 
     /**
@@ -163,10 +163,11 @@ public class SignalStrength implements Parcelable {
             int cdmaDbm, int cdmaEcio,
             int evdoDbm, int evdoEcio, int evdoSnr,
             int lteSignalStrength, int lteRsrp, int lteRsrq, int lteRssnr, int lteCqi,
-            boolean gsmFlag) {
+            int tdScdmaRscp, boolean gsmFlag) {
         initialize(gsmSignalStrength, gsmBitErrorRate, cdmaDbm, cdmaEcio,
                 evdoDbm, evdoEcio, evdoSnr, lteSignalStrength, lteRsrp,
                 lteRsrq, lteRssnr, lteCqi, gsmFlag);
+        mTdScdmaRscp = tdScdmaRscp;
     }
 
     /**
@@ -404,6 +405,7 @@ public class SignalStrength implements Parcelable {
 
         mTdScdmaRscp = ((mTdScdmaRscp >= 25) && (mTdScdmaRscp <= 120))
                 ? -mTdScdmaRscp : SignalStrength.INVALID;
+
         // Cqi no change
         if (DBG) log("Signal after validate=" + this);
     }
@@ -947,7 +949,7 @@ public class SignalStrength implements Parcelable {
         return tdScdmaAsuLevel;
     }
 
-   /**
+    /**
      * @return hash code
      */
     @Override
@@ -1060,7 +1062,7 @@ public class SignalStrength implements Parcelable {
         m.putInt("LteRssnr", mLteRssnr);
         m.putInt("LteCqi", mLteCqi);
         m.putInt("TdScdma", mTdScdmaRscp);
-        m.putBoolean("isGsm", isGsm);
+        m.putBoolean("isGsm", Boolean.valueOf(isGsm));
     }
 
     /**

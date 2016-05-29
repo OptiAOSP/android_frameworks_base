@@ -141,8 +141,6 @@ public class ServiceState implements Parcelable {
     public static final int RIL_RADIO_TECHNOLOGY_LTE = 14;
     /** @hide */
     public static final int RIL_RADIO_TECHNOLOGY_HSPAP = 15;
-    /** @hide */
-    public static final int RIL_RADIO_TECHNOLOGY_DCHSPAP = 30;
     /**
      * GSM radio technology only supports voice. It does not support data.
      * @hide
@@ -155,6 +153,12 @@ public class ServiceState implements Parcelable {
      * @hide
      */
     public static final int RIL_RADIO_TECHNOLOGY_IWLAN = 18;
+    /**
+     * LTE_CA
+     * @hide
+     */
+    public static final int RIL_RADIO_TECHNOLOGY_LTE_CA = 19;
+
     /**
      * Available registration states for GSM, UMTS and CDMA.
      */
@@ -725,17 +729,19 @@ public class ServiceState implements Parcelable {
                 rtString = "LTE";
                 break;
             case RIL_RADIO_TECHNOLOGY_HSPAP:
-            case RIL_RADIO_TECHNOLOGY_DCHSPAP:
                 rtString = "HSPAP";
                 break;
             case RIL_RADIO_TECHNOLOGY_GSM:
                 rtString = "GSM";
                 break;
+            case RIL_RADIO_TECHNOLOGY_TD_SCDMA:
+                rtString = "TD-SCDMA";
+                break;
             case RIL_RADIO_TECHNOLOGY_IWLAN:
                 rtString = "IWLAN";
                 break;
-            case RIL_RADIO_TECHNOLOGY_TD_SCDMA:
-                rtString = "TD-SCDMA";
+            case RIL_RADIO_TECHNOLOGY_LTE_CA:
+                rtString = "LTE_CA";
                 break;
             default:
                 rtString = "Unexpected";
@@ -989,7 +995,7 @@ public class ServiceState implements Parcelable {
         m.putString("data-operator-alpha-long", mDataOperatorAlphaLong);
         m.putString("data-operator-alpha-short", mDataOperatorAlphaShort);
         m.putString("data-operator-numeric", mDataOperatorNumeric);
-        m.putBoolean("manual", mIsManualNetworkSelection);
+        m.putBoolean("manual", Boolean.valueOf(mIsManualNetworkSelection));
         m.putInt("radioTechnology", mRilVoiceRadioTechnology);
         m.putInt("dataRadioTechnology", mRilDataRadioTechnology);
         m.putBoolean("cssIndicator", mCssIndicator);
@@ -997,8 +1003,8 @@ public class ServiceState implements Parcelable {
         m.putInt("systemId", mSystemId);
         m.putInt("cdmaRoamingIndicator", mCdmaRoamingIndicator);
         m.putInt("cdmaDefaultRoamingIndicator", mCdmaDefaultRoamingIndicator);
-        m.putBoolean("emergencyOnly", mIsEmergencyOnly);
-        m.putBoolean("isDataRoamingFromRegistration", mIsDataRoamingFromRegistration);
+        m.putBoolean("emergencyOnly", Boolean.valueOf(mIsEmergencyOnly));
+        m.putBoolean("isDataRoamingFromRegistration", Boolean.valueOf(mIsDataRoamingFromRegistration));
     }
 
     /** @hide */
@@ -1071,7 +1077,6 @@ public class ServiceState implements Parcelable {
         case ServiceState.RIL_RADIO_TECHNOLOGY_LTE:
             return TelephonyManager.NETWORK_TYPE_LTE;
         case ServiceState.RIL_RADIO_TECHNOLOGY_HSPAP:
-        case ServiceState.RIL_RADIO_TECHNOLOGY_DCHSPAP:
             return TelephonyManager.NETWORK_TYPE_HSPAP;
         case ServiceState.RIL_RADIO_TECHNOLOGY_GSM:
             return TelephonyManager.NETWORK_TYPE_GSM;
@@ -1079,6 +1084,8 @@ public class ServiceState implements Parcelable {
             return TelephonyManager.NETWORK_TYPE_TD_SCDMA;
         case ServiceState.RIL_RADIO_TECHNOLOGY_IWLAN:
             return TelephonyManager.NETWORK_TYPE_IWLAN;
+        case ServiceState.RIL_RADIO_TECHNOLOGY_LTE_CA:
+            return TelephonyManager.NETWORK_TYPE_LTE_CA;
         default:
             return TelephonyManager.NETWORK_TYPE_UNKNOWN;
         }
@@ -1128,10 +1135,11 @@ public class ServiceState implements Parcelable {
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_HSPA
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_LTE
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_HSPAP
-                || radioTechnology == RIL_RADIO_TECHNOLOGY_DCHSPAP
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_GSM
                 || radioTechnology == RIL_RADIO_TECHNOLOGY_TD_SCDMA
-                || radioTechnology == RIL_RADIO_TECHNOLOGY_IWLAN;
+                || radioTechnology == RIL_RADIO_TECHNOLOGY_IWLAN
+                || radioTechnology == RIL_RADIO_TECHNOLOGY_LTE_CA;
+
     }
 
     /** @hide */

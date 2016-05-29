@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ * Not a Contribution.
+ *
  * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +21,12 @@ package android.telephony;
 
 import android.annotation.Nullable;
 import android.annotation.SystemApi;
+import android.Manifest;
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.app.ActivityThread;
 import android.content.ContentResolver;
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
@@ -31,6 +36,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.telecom.PhoneAccount;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.internal.telecom.ITelecomService;
@@ -45,6 +51,7 @@ import com.android.internal.telephony.TelephonyProperties;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -684,6 +691,11 @@ public class TelephonyManager {
      */
     public static final String VVM_TYPE_CVVM = "vvm_type_cvvm";
 
+    /**
+     * @hide
+     */
+    public static final String EXTRA_IS_FORWARDED = "is_forwarded";
+
     //
     //
     // Device Info
@@ -1204,6 +1216,15 @@ public class TelephonyManager {
         return retVal;
     }
 
+    /**
+     * Return if the current radio is LTE on GSM
+     * @hide
+     */
+    public static int getLteOnGsmModeStatic() {
+        return SystemProperties.getInt(TelephonyProperties.PROPERTY_LTE_ON_GSM_DEVICE,
+                    0);
+    }
+
     //
     //
     // Current Network
@@ -1380,11 +1401,12 @@ public class TelephonyManager {
     public static final int NETWORK_TYPE_HSPAP = 15;
     /** Current network is GSM {@hide} */
     public static final int NETWORK_TYPE_GSM = 16;
-     /** Current network is TD_SCDMA {@hide} */
+    /** Current network is TD_SCDMA {@hide} */
     public static final int NETWORK_TYPE_TD_SCDMA = 17;
    /** Current network is IWLAN {@hide} */
     public static final int NETWORK_TYPE_IWLAN = 18;
-
+    /** Current network is LTE_CA {@hide} */
+    public static final int NETWORK_TYPE_LTE_CA = 19;
     /**
      * @return the NETWORK_TYPE_xxxx for current data connection.
      */
@@ -1429,10 +1451,12 @@ public class TelephonyManager {
      * @see #NETWORK_TYPE_LTE
      * @see #NETWORK_TYPE_EHRPD
      * @see #NETWORK_TYPE_HSPAP
+     * @see #NETWORK_TYPE_TD_SCDMA
      *
      * <p>
      * Requires Permission:
      *   {@link android.Manifest.permission#READ_PHONE_STATE READ_PHONE_STATE}
+     * @hide
      */
     /** {@hide} */
    public int getNetworkType(int subId) {
@@ -1552,6 +1576,21 @@ public class TelephonyManager {
         }
     }
 
+    /**
+     * Returns the icc operator numeric for a given subId
+     *
+     */
+    /** {@hide} */
+    public String getIccOperatorNumericForData(int subId) {
+       try{
+            return getITelephony().getIccOperatorNumericForData(subId);
+       } catch (RemoteException ex) {
+           return null;
+       } catch (NullPointerException ex) {
+           return null;
+       }
+    }
+
     /** Unknown network class. {@hide} */
     public static final int NETWORK_CLASS_UNKNOWN = 0;
     /** Class of broadly defined "2G" networks. {@hide} */
@@ -1589,6 +1628,7 @@ public class TelephonyManager {
                 return NETWORK_CLASS_3_G;
             case NETWORK_TYPE_LTE:
             case NETWORK_TYPE_IWLAN:
+            case NETWORK_TYPE_LTE_CA:
                 return NETWORK_CLASS_4_G;
             default:
                 return NETWORK_CLASS_UNKNOWN;
@@ -1652,6 +1692,8 @@ public class TelephonyManager {
                 return "TD_SCDMA";
             case NETWORK_TYPE_IWLAN:
                 return "IWLAN";
+            case NETWORK_TYPE_LTE_CA:
+                return "LTE_CA";
             default:
                 return "UNKNOWN";
         }
@@ -2014,6 +2056,21 @@ public class TelephonyManager {
         } catch (NullPointerException ex) {
             // This could happen before phone restarts due to crashing
             return PhoneConstants.LTE_ON_CDMA_UNKNOWN;
+        }
+    }
+
+    /**
+     * Return if the current radio is LTE on GSM
+     * @hide
+     */
+    public int getLteOnGsmMode() {
+        try {
+            return getITelephony().getLteOnGsmMode();
+        } catch (RemoteException ex) {
+            return 0;
+        } catch (NullPointerException ex) {
+            // This could happen before phone restarts due to crashing
+            return 0;
         }
     }
 
@@ -2972,6 +3029,50 @@ public class TelephonyManager {
     }
 
     /**
+     * Opens a logical channel to the ICC card
+     *
+     * Input parameters equivalent to TS 27.007 AT+CCHO command.
+     *
+     * @param AID application id. See ETSI 102.221 and 101.220.
+     * @param p2  byte P2 parameter
+     * @return an IccOpenLogicalChannelResponse object
+     * @hide
+     */
+    public IccOpenLogicalChannelResponse iccOpenLogicalChannel(String AID, byte p2) {
+        try {
+            ITelephony telephony = getITelephony();
+            if (telephony != null) {
+               return telephony.iccOpenLogicalChannelWithP2(AID, p2);
+            }
+        } catch (RemoteException ex) {
+        } catch (NullPointerException ex) {
+        }
+        return null;
+    }
+
+    /**
+     * Opens a logical channel to the ICC card for the given subId
+     *
+     * @param subId subid to send the command to
+     * @param AID applcation id. See ETSI 102.221 and 101.220.
+     * @param p2 byte P2 parameter
+     * @return an IccOpenLogicalChannelResponse object
+     * @hide
+     */
+    public IccOpenLogicalChannelResponse iccOpenLogicalChannel(int subId,
+                String AID, byte p2) {
+        try {
+            ITelephony telephony = getITelephony();
+            if (telephony != null) {
+                return telephony.iccOpenLogicalChannelUsingSubIdWithP2(subId, AID, p2);
+            }
+        } catch (RemoteException ex) {
+        } catch (NullPointerException ex) {
+        }
+        return null;
+    }
+
+    /**
      * Closes a previously opened logical channel to the ICC card.
      *
      * Input parameters equivalent to TS 27.007 AT+CCHC command.
@@ -3396,13 +3497,7 @@ public class TelephonyManager {
 
     /** @hide */
     public int getSimCount() {
-        // FIXME Need to get it from Telephony Dev Controller when that gets implemented!
-        // and then this method shouldn't be used at all!
-        if(isMultiSimEnabled()) {
-            return 2;
-        } else {
-            return 1;
-        }
+        return getPhoneCount();
     }
 
     /**
@@ -4202,7 +4297,7 @@ public class TelephonyManager {
             if (telephony != null)
                 telephony.setDataEnabled(subId, enable);
         } catch (RemoteException e) {
-            Log.e(TAG, "Error calling ITelephony#setDataEnabled", e);
+            Log.e(TAG, "Error calling setDataEnabled", e);
         }
     }
 
@@ -4636,7 +4731,7 @@ public class TelephonyManager {
      */
     public boolean getSmsReceiveCapableForPhone(int phoneId, boolean defaultValue) {
         if (SubscriptionManager.isValidPhoneId(phoneId)) {
-            return Boolean.parseBoolean(TelephonyManager.getTelephonyProperty(phoneId,
+            return Boolean.valueOf(TelephonyManager.getTelephonyProperty(phoneId,
                     TelephonyProperties.PROPERTY_SMS_RECEIVE, String.valueOf(defaultValue)));
         }
 
@@ -4667,7 +4762,7 @@ public class TelephonyManager {
      */
     public boolean getSmsSendCapableForPhone(int phoneId, boolean defaultValue) {
         if (SubscriptionManager.isValidPhoneId(phoneId)) {
-            return Boolean.parseBoolean(TelephonyManager.getTelephonyProperty(phoneId,
+            return Boolean.valueOf(TelephonyManager.getTelephonyProperty(phoneId,
                     TelephonyProperties.PROPERTY_SMS_SEND, String.valueOf(defaultValue)));
         }
 
