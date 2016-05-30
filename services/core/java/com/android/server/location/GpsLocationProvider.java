@@ -453,17 +453,22 @@ public class GpsLocationProvider implements LocationProviderInterface {
                         intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
                 ConnectivityManager connManager = (ConnectivityManager)
                         mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-                info = connManager.getNetworkInfo(info.getType());
+                if (info != null) {
+			info = connManager.getNetworkInfo(info.getType());
 
-                int networkState;
-                if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) ||
-                        !info.isConnected()) {
-                    networkState = LocationProvider.TEMPORARILY_UNAVAILABLE;
-                } else {
-                    networkState = LocationProvider.AVAILABLE;
-                }
+	                int networkState;
+	                if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) ||
+	                       !info.isConnected()) {
+                	    networkState = LocationProvider.TEMPORARILY_UNAVAILABLE;
+        	        } else {
+        	            networkState = LocationProvider.AVAILABLE;
+                	}
 
-                updateNetworkState(networkState, info);
+	                updateNetworkState(networkState, info);
+		} else {
+			Log.e(TAG, "info == null");
+		}
+
             } else if (PowerManager.ACTION_POWER_SAVE_MODE_CHANGED.equals(action)
                     || PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED.equals(action)
                     || Intent.ACTION_SCREEN_OFF.equals(action)
