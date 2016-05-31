@@ -47,7 +47,6 @@ import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CastController;
-import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.HotspotController;
 import com.android.systemui.statusbar.policy.KeyguardMonitor;
 import com.android.systemui.statusbar.policy.LocationController;
@@ -85,7 +84,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
     private final HotspotController mHotspot;
     private final CastController mCast;
     private final Looper mLooper;
-    private final FlashlightController mFlashlight;
     private final UserSwitcherController mUserSwitcherController;
     private final KeyguardMonitor mKeyguard;
     private final SecurityController mSecurity;
@@ -96,8 +94,7 @@ public class QSTileHost implements QSTile.Host, Tunable {
             BluetoothController bluetooth, LocationController location,
             RotationLockController rotation, NetworkController network,
             ZenModeController zen, HotspotController hotspot,
-            CastController cast, FlashlightController flashlight,
-            UserSwitcherController userSwitcher, KeyguardMonitor keyguard,
+            CastController cast, UserSwitcherController userSwitcher, KeyguardMonitor keyguard,
             SecurityController security) {
         mContext = context;
         mStatusBar = statusBar;
@@ -108,7 +105,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
         mZen = zen;
         mHotspot = hotspot;
         mCast = cast;
-        mFlashlight = flashlight;
         mUserSwitcherController = userSwitcher;
         mKeyguard = keyguard;
         mSecurity = security;
@@ -198,11 +194,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
     @Override
     public CastController getCastController() {
         return mCast;
-    }
-
-    @Override
-    public FlashlightController getFlashlightController() {
-        return mFlashlight;
     }
 
     @Override

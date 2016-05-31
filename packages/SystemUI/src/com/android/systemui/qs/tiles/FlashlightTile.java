@@ -17,32 +17,33 @@
 package com.android.systemui.qs.tiles;
 
 import android.app.ActivityManager;
+import android.content.Context;
+import android.hardware.TorchManager;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSTile;
-import com.android.systemui.statusbar.policy.FlashlightController;
 
 /** Quick settings tile: Control flashlight **/
 public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
-        FlashlightController.FlashlightListener {
+        TorchManager.TorchCallback {
 
     private final AnimationIcon mEnable
             = new AnimationIcon(R.drawable.ic_signal_flashlight_enable_animation);
     private final AnimationIcon mDisable
             = new AnimationIcon(R.drawable.ic_signal_flashlight_disable_animation);
-    private final FlashlightController mFlashlightController;
+    private final TorchManager mTorchManager;
 
     public FlashlightTile(Host host) {
         super(host);
-        mFlashlightController = host.getFlashlightController();
-        mFlashlightController.addListener(this);
+        mTorchManager = (TorchManager) mContext.getSystemService(Context.TORCH_SERVICE);
+        mTorchManager.addListener(this);
     }
 
     @Override
     protected void handleDestroy() {
         super.handleDestroy();
-        mFlashlightController.removeListener(this);
+        mTorchManager.removeListener(this);
     }
 
     @Override
@@ -52,6 +53,7 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
 
     @Override
     public void setListening(boolean listening) {
+
     }
 
     @Override
@@ -65,13 +67,13 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
         }
         MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
         boolean newState = !mState.value;
+        mTorchManager.setTorchEnabled(newState);
         refreshState(newState ? UserBoolean.USER_TRUE : UserBoolean.USER_FALSE);
-        mFlashlightController.setFlashlight(newState);
     }
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        state.visible = mFlashlightController.isAvailable();
+        state.visible = mTorchManager.isAvailable();
         state.label = mHost.getContext().getString(R.string.quick_settings_flashlight_label);
         if (arg instanceof UserBoolean) {
             boolean value = ((UserBoolean) arg).value;
@@ -80,8 +82,9 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
             }
             state.value = value;
         } else {
-            state.value = mFlashlightController.isEnabled();
+            state.value = mTorchManager.isTorchOn();
         }
+
         final AnimationIcon icon = state.value ? mEnable : mDisable;
         icon.setAllowAnimation(arg instanceof UserBoolean && ((UserBoolean) arg).userInitiated);
         state.icon = icon;
@@ -106,17 +109,17 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
     }
 
     @Override
-    public void onFlashlightChanged(boolean enabled) {
-        refreshState(enabled ? UserBoolean.BACKGROUND_TRUE : UserBoolean.BACKGROUND_FALSE);
-    }
-
-    @Override
-    public void onFlashlightError() {
+    public void onTorchOff() {
         refreshState(UserBoolean.BACKGROUND_FALSE);
     }
 
     @Override
-    public void onFlashlightAvailabilityChanged(boolean available) {
+    public void onTorchError() {
+        refreshState(UserBoolean.BACKGROUND_FALSE);
+    }
+
+    @Override
+    public void onTorchAvailabilityChanged(boolean available) {
         refreshState();
     }
 }
