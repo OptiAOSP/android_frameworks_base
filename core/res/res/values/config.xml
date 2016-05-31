@@ -2485,4 +2485,13 @@
     <string name="config_rat_3g" translatable="false">3G</string>
     <string name="config_rat_4g" translatable="false">4G</string>
     
+    <!-- If there is no sysfs-based control mechanism, enable this -->
+    <bool name="useCameraInterface">true</bool>
+    <!-- Full path to the sysfs toggle -->
+    <string name="flashDevice"></string>
+    <!-- Off setting -->
+    <integer name="valueOff">0</integer>
+    <!-- On setting -->
+    <integer name="valueOn">1</integer>
+
 </resources>

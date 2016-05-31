@@ -2405,4 +2405,11 @@
 
   <!-- power profiles -->
   <java-symbol type="bool" name="config_powerProfilesSupported" />
+
+  <!-- Torch -->
+  <java-symbol type="bool" name="useCameraInterface" />
+  <java-symbol type="string" name="flashDevice" />
+  <java-symbol type="integer" name="valueOff" />
+  <java-symbol type="integer" name="valueOn" />
+
 </resources>
