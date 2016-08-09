@@ -7107,6 +7107,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     int theme;
                     if (mContext.getPackageManager().hasSystemFeature(FEATURE_TELEVISION)) {
                         theme = com.android.internal.R.style.Theme_Leanback_Dialog_Alert;
+                    } else if (SystemProperties.get("ro.product.display_type").equals("amoled")) {
+                        theme = com.android.internal.R.style.Theme_Material_Dialog_Alert;
                     } else {
                         theme = 0;
                     }
