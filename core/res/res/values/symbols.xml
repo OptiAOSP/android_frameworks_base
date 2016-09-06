@@ -2751,4 +2751,5 @@
   <java-symbol type="drawable" name="lockscreen_selected" />
 
   <java-symbol type="bool" name="config_samsung_stk" />
+  <java-symbol type="bool" name="config_usb_data_unlock" />
 </resources>
