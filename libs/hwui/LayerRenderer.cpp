@@ -332,7 +332,7 @@ void LayerRenderer::destroyLayer(Layer* layer) {
 }
 
 void LayerRenderer::flushLayer(RenderState& renderState, Layer* layer) {
-#ifdef GL_EXT_discard_framebuffer
+#ifdef GL_EXT_discard_framebuffer && !defined(STE_HARDWARE)
     if (!layer) return;
 
     GLuint fbo = layer->getFbo();
