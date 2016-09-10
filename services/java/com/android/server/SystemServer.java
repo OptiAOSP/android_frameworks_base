@@ -937,12 +937,14 @@ public final class SystemServer {
             }
 
             traceBeginAndSlog("StartAudioService");
+/*
             try {
                 audioService = new AudioService(context);
                 ServiceManager.addService(Context.AUDIO_SERVICE, audioService);
             } catch (Throwable e) {
                 reportWtf("starting Audio Service", e);
             }
+*/
             Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
 
             if (!disableNonCoreServices) {
