@@ -521,6 +521,7 @@ public final class SystemServer {
         InputManagerService inputManager = null;
         TelephonyRegistry telephonyRegistry = null;
         ConsumerIrService consumerIr = null;
+        AudioService audioService = null;
         MmsServiceBroker mmsService = null;
         HardwarePropertiesManagerService hardwarePropertiesService = null;
 
@@ -936,7 +937,12 @@ public final class SystemServer {
             }
 
             traceBeginAndSlog("StartAudioService");
-            mSystemServiceManager.startService(AudioService.Lifecycle.class);
+            try {
+                audioService = new AudioService(context);
+                ServiceManager.addService(Context.AUDIO_SERVICE, audioService);
+            } catch (Throwable e) {
+                reportWtf("starting Audio Service", e);
+            }
             Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
 
             if (!disableNonCoreServices) {
@@ -1270,6 +1276,7 @@ public final class SystemServer {
         final InputManagerService inputManagerF = inputManager;
         final TelephonyRegistry telephonyRegistryF = telephonyRegistry;
         final MediaRouterService mediaRouterF = mediaRouter;
+        final AudioService audioServiceF = audioService;
         final MmsServiceBroker mmsServiceF = mmsService;
 
         // We now tell the activity manager it is okay to run third party
@@ -1342,7 +1349,13 @@ public final class SystemServer {
                     reportWtf("making Connectivity Service ready", e);
                 }
                 Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
-
+                Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, "MakeAudioServiceReady");
+                try {
+                    if (audioServiceF != null) audioServiceF.systemReady();
+                } catch (Throwable e) {
+                    reportWtf("Notifying AudioService running", e);
+                }
+                Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
                 Watchdog.getInstance().start();
 
                 // It is now okay to let the various system services start their

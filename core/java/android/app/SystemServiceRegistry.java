@@ -188,13 +188,6 @@ final class SystemServiceRegistry {
                 return new AlarmManager(service, ctx);
             }});
 
-        registerService(Context.AUDIO_SERVICE, AudioManager.class,
-                new CachedServiceFetcher<AudioManager>() {
-            @Override
-            public AudioManager createService(ContextImpl ctx) {
-                return new AudioManager(ctx);
-            }});
-
         registerService(Context.MEDIA_ROUTER_SERVICE, MediaRouter.class,
                 new CachedServiceFetcher<MediaRouter>() {
             @Override
