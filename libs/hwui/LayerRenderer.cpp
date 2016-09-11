@@ -194,7 +194,13 @@ Layer* LayerRenderer::createRenderLayer(RenderState& renderState, uint32_t width
         ALOGW("Could not obtain an FBO");
         return nullptr;
     }
-
+#ifdef STE_HARDWARE
+    if (width == 0 && height == 0) {
+        ALOGW("Trying to obtain a zero-size layer, setting fall-back size 512x768");
+        width = 512;
+        height = 768;
+    }
+#endif
     caches.textureState().activateTexture(0);
     Layer* layer = caches.layerCache.get(renderState, width, height);
     if (!layer) {
@@ -327,7 +333,7 @@ void LayerRenderer::destroyLayer(Layer* layer) {
 }
 
 void LayerRenderer::flushLayer(RenderState& renderState, Layer* layer) {
-#ifdef GL_EXT_discard_framebuffer
+#if 0
     if (!layer) return;
 
     GLuint fbo = layer->getFbo();
