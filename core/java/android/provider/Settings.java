@@ -3601,6 +3601,14 @@ public final class Settings {
         */
         public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot";
 
+
+        /**
+        * USB Data automatic unlock
+        * @hide
+        */
+        public static final String USB_DATA_AUTO_UNLOCK = "usb_data_auto_unlock";
+
+
 	/**
          * show the membar in recents
          *  @hide
