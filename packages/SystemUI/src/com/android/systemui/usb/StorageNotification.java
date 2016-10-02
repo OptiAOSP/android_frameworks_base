@@ -317,58 +317,7 @@ public class StorageNotification extends SystemUI {
     }
 
     private Notification onVolumeMounted(VolumeInfo vol) {
-        final VolumeRecord rec = mStorageManager.findRecordByUuid(vol.getFsUuid());
-        final DiskInfo disk = vol.getDisk();
-
-        // Don't annoy
-        if (rec.isSnoozed()) {
             return null;
-        }
-
-        if (disk.isAdoptable() && !rec.isInited()) {
-            final CharSequence title = disk.getDescription();
-            final CharSequence text = mContext.getString(
-                    R.string.ext_media_new_notification_message, disk.getDescription());
-
-            final PendingIntent initIntent = buildInitPendingIntent(vol);
-            return buildNotificationBuilder(vol, title, text)
-                    .addAction(new Action(R.drawable.ic_settings_24dp,
-                            mContext.getString(R.string.ext_media_init_action), initIntent))
-                    .addAction(new Action(R.drawable.ic_eject_24dp,
-                            mContext.getString(R.string.ext_media_unmount_action),
-                            buildUnmountPendingIntent(vol)))
-                    .setContentIntent(initIntent)
-                    .setDeleteIntent(buildSnoozeIntent(vol.getFsUuid()))
-                    .setCategory(Notification.CATEGORY_SYSTEM)
-                    .build();
-
-        } else {
-// Chrono: Should not reach here, but I'll comment out it just to make sure.
-/*
-            final CharSequence title = disk.getDescription();
-            final CharSequence text = mContext.getString(
-                    R.string.ext_media_ready_notification_message, disk.getDescription());
-
-            final PendingIntent browseIntent = buildBrowsePendingIntent(vol);
-            final Notification.Builder builder = buildNotificationBuilder(vol, title, text)
-                    .addAction(new Action(R.drawable.ic_folder_24dp,
-                            mContext.getString(R.string.ext_media_browse_action),
-                            browseIntent))
-                    .addAction(new Action(R.drawable.ic_eject_24dp,
-                            mContext.getString(R.string.ext_media_unmount_action),
-                            buildUnmountPendingIntent(vol)))
-                    .setContentIntent(browseIntent)
-                    .setCategory(Notification.CATEGORY_SYSTEM)
-                    .setPriority(Notification.PRIORITY_LOW);
-            // Non-adoptable disks can't be snoozed.
-            if (disk.isAdoptable()) {
-                builder.setDeleteIntent(buildSnoozeIntent(vol.getFsUuid()));
-            }
-
-            return builder.build();
-*/
-            return null;
-        }
     }
 
     private Notification onVolumeFormatting(VolumeInfo vol) {
