@@ -2918,7 +2918,7 @@ public class Camera {
          * @return the int value of the parameter
          */
         public int getInt(String key) {
-            return Integer.parseInt(mMap.get(key));
+            return Integer.getInteger(mMap.get(key),0);
         }
 
         /**

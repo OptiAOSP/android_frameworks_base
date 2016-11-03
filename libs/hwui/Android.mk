@@ -2,6 +2,10 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
+ifeq ($(TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE),true)
+   LOCAL_CFLAGS += -DREQUIRES_SYNCHRONOUS_SETSURFACE
+endif
+
 HWUI_NEW_OPS := true
 
 # Enables fine-grained GLES error checking
