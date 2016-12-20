@@ -70,16 +70,10 @@ public class LocationManager {
             new HashMap<>();
     private final HashMap<GpsStatus.NmeaListener, GnssStatusListenerTransport> mGpsNmeaListeners =
             new HashMap<>();
-    private final HashMap<GnssStatusCallback, GnssStatusListenerTransport>
-            mOldGnssStatusListeners = new HashMap<>();
     private final HashMap<GnssStatus.Callback, GnssStatusListenerTransport> mGnssStatusListeners =
-            new HashMap<>();
-    private final HashMap<GnssNmeaListener, GnssStatusListenerTransport> mOldGnssNmeaListeners =
             new HashMap<>();
     private final HashMap<OnNmeaMessageListener, GnssStatusListenerTransport> mGnssNmeaListeners =
             new HashMap<>();
-    private final HashMap<GnssNavigationMessageEvent.Callback, GnssNavigationMessage.Callback>
-            mNavigationMessageBridge = new HashMap<>();
     private GnssStatus mGnssStatus;
     private int mTimeToFirstFix;
 
@@ -1412,9 +1406,7 @@ public class LocationManager {
 
         private final GpsStatus.Listener mGpsListener;
         private final GpsStatus.NmeaListener mGpsNmeaListener;
-        private final GnssStatusCallback mOldGnssCallback;
         private final GnssStatus.Callback mGnssCallback;
-        private final GnssNmeaListener mOldGnssNmeaListener;
         private final OnNmeaMessageListener mGnssNmeaListener;
 
         private class GnssHandler extends Handler {
@@ -1478,7 +1470,6 @@ public class LocationManager {
             mGnssHandler = new GnssHandler(handler);
             mGpsNmeaListener = null;
             mNmeaBuffer = null;
-            mOldGnssCallback = null;
             mGnssCallback = mGpsListener != null ? new GnssStatus.Callback() {
                 @Override
                 public void onStarted() {
@@ -1500,7 +1491,6 @@ public class LocationManager {
                     mGpsListener.onGpsStatusChanged(GpsStatus.GPS_EVENT_SATELLITE_STATUS);
                 }
             } : null;
-            mOldGnssNmeaListener = null;
             mGnssNmeaListener = null;
         }
 
@@ -1513,9 +1503,7 @@ public class LocationManager {
             mGnssHandler = new GnssHandler(handler);
             mGpsNmeaListener = listener;
             mNmeaBuffer = new ArrayList<Nmea>();
-            mOldGnssCallback = null;
             mGnssCallback = null;
-            mOldGnssNmeaListener = null;
             mGnssNmeaListener = mGpsNmeaListener != null ? new OnNmeaMessageListener() {
                 @Override
                 public void onNmeaMessage(String nmea, long timestamp) {
@@ -1524,74 +1512,17 @@ public class LocationManager {
             } : null;
         }
 
-        GnssStatusListenerTransport(GnssStatusCallback callback) {
-            this(callback, null);
-        }
-
-        GnssStatusListenerTransport(GnssStatusCallback callback, Handler handler) {
-            mOldGnssCallback = callback;
-            mGnssCallback = mOldGnssCallback != null ? new GnssStatus.Callback() {
-                @Override
-                public void onStarted() {
-                    mOldGnssCallback.onStarted();
-                }
-
-                @Override
-                public void onStopped() {
-                    mOldGnssCallback.onStopped();
-                }
-
-                @Override
-                public void onFirstFix(int ttff) {
-                    mOldGnssCallback.onFirstFix(ttff);
-                }
-
-                @Override
-                public void onSatelliteStatusChanged(GnssStatus status) {
-                    mOldGnssCallback.onSatelliteStatusChanged(status);
-                }
-            } : null;
-            mGnssHandler = new GnssHandler(handler);
-            mOldGnssNmeaListener = null;
-            mGnssNmeaListener = null;
-            mNmeaBuffer = null;
-            mGpsListener = null;
-            mGpsNmeaListener = null;
-        }
-
         GnssStatusListenerTransport(GnssStatus.Callback callback) {
             this(callback, null);
         }
 
         GnssStatusListenerTransport(GnssStatus.Callback callback, Handler handler) {
-            mOldGnssCallback = null;
             mGnssCallback = callback;
             mGnssHandler = new GnssHandler(handler);
-            mOldGnssNmeaListener = null;
             mGnssNmeaListener = null;
             mNmeaBuffer = null;
             mGpsListener = null;
             mGpsNmeaListener = null;
-        }
-
-        GnssStatusListenerTransport(GnssNmeaListener listener) {
-            this(listener, null);
-        }
-
-        GnssStatusListenerTransport(GnssNmeaListener listener, Handler handler) {
-            mGnssCallback = null;
-            mOldGnssCallback = null;
-            mGnssHandler = new GnssHandler(handler);
-            mOldGnssNmeaListener = listener;
-            mGnssNmeaListener = mOldGnssNmeaListener != null ? new OnNmeaMessageListener() {
-                @Override
-                public void onNmeaMessage(String message, long timestamp) {
-                    mOldGnssNmeaListener.onNmeaReceived(timestamp, message);
-                }
-            } : null;
-            mGpsListener = null;
-            mGpsNmeaListener = null;
-            mNmeaBuffer = new ArrayList<Nmea>();
         }
 
         GnssStatusListenerTransport(OnNmeaMessageListener listener) {
@@ -1599,10 +1530,8 @@ public class LocationManager {
         }
 
         GnssStatusListenerTransport(OnNmeaMessageListener listener, Handler handler) {
-            mOldGnssCallback = null;
             mGnssCallback = null;
             mGnssHandler = new GnssHandler(handler);
-            mOldGnssNmeaListener = null;
             mGnssNmeaListener = listener;
             mGpsListener = null;
             mGpsNmeaListener = null;
@@ -1718,73 +1647,9 @@ public class LocationManager {
     }
 
     /**
-     * Registers a GNSS status listener.
+     * Registers a GNSS status callback.
      *
-     * @param callback GNSS status listener object to register
-     *
-     * @return true if the listener was successfully added
-     *
-     * @throws SecurityException if the ACCESS_FINE_LOCATION permission is not present
-     * @removed
-     */
-    @RequiresPermission(ACCESS_FINE_LOCATION)
-    public boolean registerGnssStatusCallback(GnssStatusCallback callback) {
-        return registerGnssStatusCallback(callback, null);
-    }
-
-    /**
-     * Registers a GNSS status listener.
-     *
-     * @param callback GNSS status listener object to register
-     * @param handler the handler that the callback runs on.
-     *
-     * @return true if the listener was successfully added
-     *
-     * @throws SecurityException if the ACCESS_FINE_LOCATION permission is not present
-     * @removed
-     */
-    @RequiresPermission(ACCESS_FINE_LOCATION)
-    public boolean registerGnssStatusCallback(GnssStatusCallback callback, Handler handler) {
-        boolean result;
-        if (mOldGnssStatusListeners.get(callback) != null) {
-            // listener is already registered
-            return true;
-        }
-        try {
-            GnssStatusListenerTransport transport =
-                    new GnssStatusListenerTransport(callback, handler);
-            result = mService.registerGnssStatusCallback(transport, mContext.getPackageName());
-            if (result) {
-                mOldGnssStatusListeners.put(callback, transport);
-            }
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-
-        return result;
-    }
-
-    /**
-     * Removes a GNSS status listener.
-     *
-     * @param callback GNSS status listener object to remove
-     * @removed
-     */
-    public void unregisterGnssStatusCallback(GnssStatusCallback callback) {
-        try {
-            GnssStatusListenerTransport transport = mOldGnssStatusListeners.remove(callback);
-            if (transport != null) {
-                mService.unregisterGnssStatusCallback(transport);
-            }
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    /**
-     * Registers a GNSS status listener.
-     *
-     * @param callback GNSS status listener object to register
+     * @param callback GNSS status callback object to register
      *
      * @return true if the listener was successfully added
      *
@@ -1796,9 +1661,9 @@ public class LocationManager {
     }
 
     /**
-     * Registers a GNSS status listener.
+     * Registers a GNSS status callback.
      *
-     * @param callback GNSS status listener object to register
+     * @param callback GNSS status callback object to register
      * @param handler the handler that the callback runs on.
      *
      * @return true if the listener was successfully added
@@ -1827,9 +1692,9 @@ public class LocationManager {
     }
 
     /**
-     * Removes a GNSS status listener.
+     * Removes a GNSS status callback.
      *
-     * @param callback GNSS status listener object to remove
+     * @param callback GNSS status callback object to remove
      */
     public void unregisterGnssStatusCallback(GnssStatus.Callback callback) {
         try {
@@ -1885,71 +1750,6 @@ public class LocationManager {
     public void removeNmeaListener(GpsStatus.NmeaListener listener) {
         try {
             GnssStatusListenerTransport transport = mGpsNmeaListeners.remove(listener);
-            if (transport != null) {
-                mService.unregisterGnssStatusCallback(transport);
-            }
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    /**
-     * Adds an NMEA listener.
-     *
-     * @param listener a {@link GnssNmeaListener} object to register
-     *
-     * @return true if the listener was successfully added
-     *
-     * @throws SecurityException if the ACCESS_FINE_LOCATION permission is not present
-     * @removed
-     */
-    @RequiresPermission(ACCESS_FINE_LOCATION)
-    public boolean addNmeaListener(GnssNmeaListener listener) {
-        return addNmeaListener(listener, null);
-    }
-
-    /**
-     * Adds an NMEA listener.
-     *
-     * @param listener a {@link GnssNmeaListener} object to register
-     * @param handler the handler that the listener runs on.
-     *
-     * @return true if the listener was successfully added
-     *
-     * @throws SecurityException if the ACCESS_FINE_LOCATION permission is not present
-     * @removed
-     */
-    @RequiresPermission(ACCESS_FINE_LOCATION)
-    public boolean addNmeaListener(GnssNmeaListener listener, Handler handler) {
-        boolean result;
-
-        if (mGpsNmeaListeners.get(listener) != null) {
-            // listener is already registered
-            return true;
-        }
-        try {
-            GnssStatusListenerTransport transport =
-                    new GnssStatusListenerTransport(listener, handler);
-            result = mService.registerGnssStatusCallback(transport, mContext.getPackageName());
-            if (result) {
-                mOldGnssNmeaListeners.put(listener, transport);
-            }
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-
-        return result;
-    }
-
-    /**
-     * Removes an NMEA listener.
-     *
-     * @param listener a {@link GnssNmeaListener} object to remove
-     * @removed
-     */
-    public void removeNmeaListener(GnssNmeaListener listener) {
-        try {
-            GnssStatusListenerTransport transport = mOldGnssNmeaListeners.remove(listener);
             if (transport != null) {
                 mService.unregisterGnssStatusCallback(transport);
             }
@@ -2099,58 +1899,6 @@ public class LocationManager {
     @Deprecated
     @SystemApi
     public void removeGpsNavigationMessageListener(GpsNavigationMessageEvent.Listener listener) {
-    }
-
-    /**
-     * Registers a GNSS Navigation Message callback.
-     *
-     * @param callback a {@link GnssNavigationMessageEvent.Callback} object to register.
-     * @return {@code true} if the callback was added successfully, {@code false} otherwise.
-     * @removed
-     */
-    public boolean registerGnssNavigationMessageCallback(
-            GnssNavigationMessageEvent.Callback callback) {
-        return registerGnssNavigationMessageCallback(callback, null);
-    }
-
-    /**
-     * Registers a GNSS Navigation Message callback.
-     *
-     * @param callback a {@link GnssNavigationMessageEvent.Callback} object to register.
-     * @param handler the handler that the callback runs on.
-     * @return {@code true} if the callback was added successfully, {@code false} otherwise.
-     * @removed
-     */
-    @RequiresPermission(ACCESS_FINE_LOCATION)
-    public boolean registerGnssNavigationMessageCallback(
-            final GnssNavigationMessageEvent.Callback callback, Handler handler) {
-        GnssNavigationMessage.Callback bridge = new GnssNavigationMessage.Callback() {
-            @Override
-            public void onGnssNavigationMessageReceived(GnssNavigationMessage message) {
-                GnssNavigationMessageEvent event = new GnssNavigationMessageEvent(message);
-                callback.onGnssNavigationMessageReceived(event);
-            }
-
-            @Override
-            public void onStatusChanged(int status) {
-                callback.onStatusChanged(status);
-            }
-        };
-        mNavigationMessageBridge.put(callback, bridge);
-        return mGnssNavigationMessageCallbackTransport.add(bridge, handler);
-    }
-
-    /**
-     * Unregisters a GNSS Navigation Message callback.
-     *
-     * @param callback a {@link GnssNavigationMessageEvent.Callback} object to remove.
-     * @removed
-     */
-    public void unregisterGnssNavigationMessageCallback(
-            GnssNavigationMessageEvent.Callback callback) {
-        mGnssNavigationMessageCallbackTransport.remove(
-                mNavigationMessageBridge.remove(
-                        callback));
     }
 
     /**
