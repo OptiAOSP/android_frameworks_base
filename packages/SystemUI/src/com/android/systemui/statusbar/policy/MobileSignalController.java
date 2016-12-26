@@ -244,13 +244,10 @@ public class MobileSignalController extends SignalController<
 
         String contentDescription = getStringIfExists(getContentDescription());
         String dataContentDescription = getStringIfExists(icons.mDataContentDescription);
-        final boolean dataDisabled = mCurrentState.iconGroup == TelephonyIcons.DATA_DISABLED
-                && mCurrentState.userSetup;
 
         // Show icon in QS when we are connected or need to show roaming or data is disabled.
         boolean showDataIcon = mCurrentState.dataConnected
-                || mCurrentState.iconGroup == TelephonyIcons.ROAMING
-                || dataDisabled;
+                || mCurrentState.iconGroup == TelephonyIcons.ROAMING;
         IconState statusIcon = new IconState(mCurrentState.enabled && !mCurrentState.airplaneMode,
                 getCurrentIconId(), contentDescription);
 
@@ -271,8 +268,7 @@ public class MobileSignalController extends SignalController<
                         && !mCurrentState.carrierNetworkChangeMode
                         && mCurrentState.activityOut;
         showDataIcon &= mCurrentState.isDefault
-                || mCurrentState.iconGroup == TelephonyIcons.ROAMING
-                || dataDisabled;
+                || mCurrentState.iconGroup == TelephonyIcons.ROAMING;
         int typeIcon = showDataIcon ? icons.mDataType : 0;
         callback.setMobileDataIndicators(statusIcon, qsIcon, typeIcon, qsTypeIcon,
                 activityIn, activityOut, dataContentDescription, description, icons.mIsWide,
@@ -437,8 +433,6 @@ public class MobileSignalController extends SignalController<
             mCurrentState.iconGroup = TelephonyIcons.CARRIER_NETWORK_CHANGE;
         } else if (isRoaming()) {
             mCurrentState.iconGroup = TelephonyIcons.ROAMING;
-        } else if (isDataDisabled()) {
-            mCurrentState.iconGroup = TelephonyIcons.DATA_DISABLED;
         }
         if (isEmergencyOnly() != mCurrentState.isEmergency) {
             mCurrentState.isEmergency = isEmergencyOnly();
@@ -451,10 +445,6 @@ public class MobileSignalController extends SignalController<
         }
 
         notifyListenersIfNecessary();
-    }
-
-    private boolean isDataDisabled() {
-        return !mPhone.getDataEnabled(mSubscriptionInfo.getSubscriptionId());
     }
 
     @VisibleForTesting
