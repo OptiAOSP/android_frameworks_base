@@ -6,7 +6,11 @@ ifeq ($(TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE),true)
    LOCAL_CFLAGS += -DREQUIRES_SYNCHRONOUS_SETSURFACE
 endif
 
+ifeq ($(TARGET_HWUI_NEW_OPS),true)
 HWUI_NEW_OPS := true
+else
+HWUI_NEW_OPS := false
+endif
 BUGREPORT_FONT_CACHE_USAGE := false
 
 # Enables fine-grained GLES error checking
