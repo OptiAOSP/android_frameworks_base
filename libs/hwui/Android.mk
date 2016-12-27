@@ -126,7 +126,7 @@ ifeq ($(TARGET_USES_HWC2),true)
     hwui_cflags += -DUSE_HWC2
 endif
 
-# GCC false-positives on this warning, and since we -Werror that's
+# GCC false-positives on this warning, and since we  that's
 # a problem
 hwui_cflags += -Wno-free-nonheap-object
 
@@ -196,6 +196,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_CLASS := STATIC_LIBRARIES
 LOCAL_MODULE := libhwui_static
+LOCAL_CLANG := true
 LOCAL_CFLAGS := $(hwui_cflags)
 LOCAL_SRC_FILES := $(hwui_src_files)
 LOCAL_C_INCLUDES := $(hwui_c_includes) $(call hwui_proto_include)
@@ -227,7 +228,7 @@ LOCAL_EXPORT_C_INCLUDE_DIRS := \
         $(LOCAL_PATH) \
         $(hwui_c_includes) \
         $(call hwui_proto_include)
-
+LOCAL_CLANG := true
 include $(LOCAL_PATH)/hwui_static_deps.mk
 include $(BUILD_STATIC_LIBRARY)
 
@@ -242,6 +243,7 @@ LOCAL_MODULE := libhwui
 LOCAL_WHOLE_STATIC_LIBRARIES := libhwui_static
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
 
+LOCAL_CLANG := true
 include $(LOCAL_PATH)/hwui_static_deps.mk
 include $(BUILD_SHARED_LIBRARY)
 

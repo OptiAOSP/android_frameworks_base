@@ -624,6 +624,12 @@
     <!-- Description of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permgroupdesc_sensors">access sensor data about your vital signs</string>
 
+     <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+     <string name="permlab_fakePackageSignature">mimic package signature</string>
+     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+     <string name="permdesc_fakePackageSignature">Allows the app to use mimic another app\'s package signature.</string>
+ 
+
     <!-- Title for the capability of an accessibility service to retrieve window content. -->
     <string name="capability_title_canRetrieveWindowContent">Retrieve window content</string>
     <!-- Description for the capability of an accessibility service to retrieve window content. -->

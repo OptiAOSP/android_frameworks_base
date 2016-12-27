@@ -9,7 +9,7 @@ LOCAL_SHARED_LIBRARIES := \
     libnativehelper \
     liblog
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 LOCAL_MODULE := libappfuse_jni
 
 include $(BUILD_SHARED_LIBRARY)

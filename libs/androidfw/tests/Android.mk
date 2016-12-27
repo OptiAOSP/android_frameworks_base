@@ -37,7 +37,7 @@ testFiles := \
 
 androidfw_test_cflags := \
     -Wall \
-    -Werror \
+     \
     -Wunused \
     -Wunreachable-code \
     -Wno-missing-field-initializers \

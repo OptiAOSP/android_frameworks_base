@@ -46,7 +46,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libandroidfw
 LOCAL_MODULE_HOST_OS := darwin linux windows
 LOCAL_CFLAGS += -DSTATIC_ANDROIDFW_FOR_TOOLS
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 LOCAL_SRC_FILES:= $(hostSources)
 LOCAL_C_INCLUDES := external/zlib
 
@@ -71,7 +71,7 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     libz
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 
 include $(BUILD_SHARED_LIBRARY)
 

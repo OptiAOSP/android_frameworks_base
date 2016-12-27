@@ -5460,11 +5460,6 @@ public static final String PHONE_BLACKLIST_REGEX_ENABLED = "phone_blacklist_rege
         public static final String FORMAL_TEXT_INPUT = "formal_text_input";
 
         /**
-         * @hide
-         */
-        public static final String SHOW_SU_INDICATOR = "show_su_indicator";
-
-        /**
          * USB Data automatic unlock
          * @hide
          */

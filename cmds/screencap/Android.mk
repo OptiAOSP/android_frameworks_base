@@ -16,6 +16,6 @@ LOCAL_MODULE:= screencap
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 
 include $(BUILD_EXECUTABLE)

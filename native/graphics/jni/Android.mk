@@ -29,7 +29,7 @@ LOCAL_C_INCLUDES += \
 
 LOCAL_MODULE:= libjnigraphics
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 
 # TODO: This is to work around b/24465209. Remove after root cause is fixed
 LOCAL_LDFLAGS_arm := -Wl,--hash-style=both

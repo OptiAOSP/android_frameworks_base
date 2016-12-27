@@ -7,7 +7,7 @@ LOCAL_SRC_FILES := \
 LOCAL_MODULE := interrupter
 LOCAL_MODULE_TAGS := eng tests
 LOCAL_LDFLAGS := -ldl
-LOCAL_CFLAGS := -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS := -Wall  -Wunused -Wunreachable-code
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -18,6 +18,6 @@ LOCAL_SRC_FILES := \
 LOCAL_MODULE := interrupter
 LOCAL_MODULE_TAGS := eng tests
 LOCAL_LDFLAGS := -ldl
-LOCAL_CFLAGS := -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS := -Wall  -Wunused -Wunreachable-code
 
 include $(BUILD_HOST_SHARED_LIBRARY)

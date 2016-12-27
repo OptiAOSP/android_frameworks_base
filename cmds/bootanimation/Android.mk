@@ -8,7 +8,7 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_CFLAGS += -DGL_GLEXT_PROTOTYPES -DEGL_EGLEXT_PROTOTYPES
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
+LOCAL_CFLAGS += -Wall  -Wunused -Wunreachable-code
 
 LOCAL_C_INCLUDES += \
     external/tinyalsa/include \
@@ -50,6 +50,7 @@ ifeq ($(TARGET_BOOTANIMATION_USE_RGB565),true)
 endif
 
 LOCAL_MODULE:= bootanimation
+LOCAL_CLANG := true
 
 LOCAL_INIT_RC := bootanim.rc
 

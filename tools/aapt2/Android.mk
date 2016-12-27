@@ -139,7 +139,7 @@ hostStaticLibs_windows := libz
 hostLdLibs_linux := -lz
 hostLdLibs_darwin := -lz
 
-cFlags := -Wall -Werror -Wno-unused-parameter -UNDEBUG
+cFlags := -Wall  -Wno-unused-parameter -UNDEBUG
 cFlags_darwin := -D_DARWIN_UNLIMITED_STREAMS -Wno-deprecated-declarations
 cFlags_windows := -Wno-maybe-uninitialized # Incorrectly marking use of Maybe.value() as error.
 cppFlags := -std=c++11 -Wno-missing-field-initializers -fno-exceptions -fno-rtti
