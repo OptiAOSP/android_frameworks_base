@@ -8161,13 +8161,6 @@ public static final String PHONE_BLACKLIST_REGEX_ENABLED = "phone_blacklist_rege
          */
         public static final String DOZE_ENABLED = "doze_enabled";
 
-
-        /**
-         * Disable hw buttons - actions, brightness, haptic feedback, overflow menu
-         * @hide
-         */
-        public static final String HARDWARE_KEYS_DISABLE = "hardware_keys_disable";
-
         /**
          * Whether the device should pulse on pick up gesture.
          * @hide
