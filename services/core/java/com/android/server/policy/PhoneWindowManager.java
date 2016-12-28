@@ -4155,11 +4155,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // Disable back key if navbar hw keys is set to off
-            if (scanCode != 0 && !hasHwKeysEnabled() && !mContext.getResources().getBoolean(com.android.internal.R.bool.config_hwKeysBackAlwaysOn)) {
-                Log.i(TAG, "Ignoring Back Key: we have hw keys disabled");
-                return 0;
-            }
             if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
                     Settings.Secure.KILL_APP_LONGPRESS_BACK, 0, UserHandle.USER_CURRENT) == 1) {
                 if (down && repeatCount == 0) {
@@ -6740,12 +6735,26 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                                 isKeyguardShowingAndNotOccluded() :
                                                 mKeyguardDelegate.isShowing()));
          // Disable all hw keys actions but let home key wake on if it's enabled
-         if (isHwKeysDisabled()) {
-             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_BACK && !mContext.getResources().getBoolean(com.android.internal.R.bool.config_hwKeysBackAlwaysOn)) {
-                 Log.i(TAG, "Ignoring Back Key: we have hw keys disabled");
+             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_HOME && !mHomeWakeScreen) {
+                 Log.i(TAG, "Ignoring Home Key: we have hw keys and also home key wake disabled");
                  return 0;
              }
-         }
+             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_MENU) {
+                 Log.i(TAG, "Ignoring Menu Key: we have hw keys disabled");
+                 return 0;
+             }
+             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_SEARCH) {
+                 Log.i(TAG, "Ignoring Search Key: we have hw keys disabled");
+                 return 0;
+             }
+             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_APP_SWITCH) {
+                 Log.i(TAG, "Ignoring App Switch Key: we have hw keys disabled");
+                 return 0;
+             }
+             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_ASSIST) {
+                 Log.i(TAG, "Ignoring Assist Key: we have hw keys disabled");
+                 return 0;
+             }
 
         if (DEBUG_INPUT) {
             Log.d(TAG, "interceptKeyTq keycode=" + keyCode
