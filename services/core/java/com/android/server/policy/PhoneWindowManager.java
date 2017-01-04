@@ -6732,6 +6732,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                                 isKeyguardShowingAndNotOccluded() :
                                                 mKeyguardDelegate.isShowing()));
          // Disable all hw keys actions but let home key wake on if it's enabled
+/*
              if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_HOME && !mHomeWakeScreen) {
                  Log.i(TAG, "Ignoring Home Key: we have hw keys and also home key wake disabled");
                  return 0;
@@ -6752,7 +6753,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                  Log.i(TAG, "Ignoring Assist Key: we have hw keys disabled");
                  return 0;
              }
-
+*/
         if (DEBUG_INPUT) {
             Log.d(TAG, "interceptKeyTq keycode=" + keyCode
                     + " interactive=" + interactive + " keyguardActive=" + keyguardActive
