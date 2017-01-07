@@ -36,7 +36,7 @@ struct SecurityContext_Delete {
 };
 typedef UniquePtr<char[], SecurityContext_Delete> Unique_SecurityContext;
 
-static jboolean isSELinuxDisabled = true;
+//static jboolean isSELinuxDisabled = true;
 
 /*
  * Function: isSELinuxEnabled
@@ -46,7 +46,7 @@ static jboolean isSELinuxDisabled = true;
  * Exceptions: none
  */
 static jboolean isSELinuxEnabled(JNIEnv *env, jobject) {
-    return !isSELinuxDisabled;
+    return is_selinux_enabled();
 }
 
 /*
@@ -69,7 +69,7 @@ static jboolean isSELinuxEnforced(JNIEnv *env, jobject) {
  * Exceptions: NullPointerException if fileDescriptor object is NULL
  */
 static jstring getPeerCon(JNIEnv *env, jobject, jobject fileDescriptor) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return NULL;
     }
 
@@ -108,7 +108,7 @@ static jstring getPeerCon(JNIEnv *env, jobject, jobject fileDescriptor) {
  * Exception: none
  */
 static jboolean setFSCreateCon(JNIEnv *env, jobject, jstring contextStr) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return false;
     }
 
@@ -139,7 +139,7 @@ static jboolean setFSCreateCon(JNIEnv *env, jobject, jstring contextStr) {
  * Exception: NullPointerException is thrown if either path or context strign are NULL
  */
 static jboolean setFileCon(JNIEnv *env, jobject, jstring pathStr, jstring contextStr) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return false;
     }
 
@@ -172,7 +172,7 @@ static jboolean setFileCon(JNIEnv *env, jobject, jstring pathStr, jstring contex
  * Exceptions: NullPointerException if the path object is null
  */
 static jstring getFileCon(JNIEnv *env, jobject, jstring pathStr) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return NULL;
     }
 
@@ -203,7 +203,7 @@ static jstring getFileCon(JNIEnv *env, jobject, jstring pathStr) {
  * Exceptions: none
  */
 static jstring getCon(JNIEnv *env, jobject) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return NULL;
     }
 
@@ -230,7 +230,7 @@ static jstring getCon(JNIEnv *env, jobject) {
  * Exceptions: none
  */
 static jstring getPidCon(JNIEnv *env, jobject, jint pid) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return NULL;
     }
 
@@ -259,7 +259,7 @@ static jstring getPidCon(JNIEnv *env, jobject, jint pid) {
  */
 static jboolean checkSELinuxAccess(JNIEnv *env, jobject, jstring subjectContextStr,
         jstring objectContextStr, jstring objectClassStr, jstring permissionStr) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return true;
     }
 
@@ -302,7 +302,7 @@ static jboolean checkSELinuxAccess(JNIEnv *env, jobject, jstring subjectContextS
  * Exceptions: none
  */
 static jboolean native_restorecon(JNIEnv *env, jobject, jstring pathnameStr, jint flags) {
-    if (isSELinuxDisabled) {
+    if (true /* isSELinuxDisabled */) {
         return true;
     }
 
@@ -360,7 +360,7 @@ int register_android_os_SELinux(JNIEnv *env) {
     cb.func_log = log_callback;
     selinux_set_callback(SELINUX_CB_LOG, cb);
 
-    isSELinuxDisabled = (is_selinux_enabled() != 1) ? true : false;
+    //isSELinuxDisabled = (is_selinux_enabled() != 1) ? true : false;
 
     return RegisterMethodsOrDie(env, "android/os/SELinux", method_table, NELEM(method_table));
 }
