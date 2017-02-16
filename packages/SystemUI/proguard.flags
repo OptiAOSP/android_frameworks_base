@@ -1,3 +1,11 @@
+-dontwarn
+-dontoptimize
+-dontshrink
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-dontobfuscate
 -keep class com.android.systemui.statusbar.policy.KeyButtonView {
   public float getDrawingAlpha();
   public void setDrawingAlpha(float);
