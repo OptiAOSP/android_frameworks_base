@@ -163,7 +163,7 @@ static void ResetNicePriority(JNIEnv* env) {
   }
   if (prio != 0 && setpriority(PRIO_PROCESS, 0, 0) != 0) {
     ALOGE("setpriority(%d, 0, 0) failed: %s", PRIO_PROCESS, strerror(errno));
-    RuntimeAbort(env, __LINE__, "setpriority failed");
+    RuntimeAbort(env);
   }
 }
 

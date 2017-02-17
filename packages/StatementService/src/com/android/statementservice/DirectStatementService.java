@@ -144,12 +144,12 @@ public final class DirectStatementService extends Service {
         mStatementRetriever = statementRetriever;
         mHandler = new Handler(looper);
 
-        /*try {
+        try {
             File httpCacheDir = new File(cacheDir, CACHE_FILENAME);
             mHttpResponseCache = HttpResponseCache.install(httpCacheDir, HTTP_CACHE_SIZE_IN_BYTES);
         } catch (IOException e) {
             Log.i(TAG, "HTTPS response cache installation failed:" + e);
-        }*/
+        }
     }
 
     @Override
@@ -158,7 +158,7 @@ public final class DirectStatementService extends Service {
         if (mThread != null) {
             mThread.quit();
         }
-/*
+
         try {
             if (mHttpResponseCache != null) {
                 mHttpResponseCache.delete();
@@ -166,7 +166,6 @@ public final class DirectStatementService extends Service {
         } catch (IOException e) {
             Log.i(TAG, "HTTP(S) response cache deletion failed:" + e);
         }
-*/
     }
 
     @Override
