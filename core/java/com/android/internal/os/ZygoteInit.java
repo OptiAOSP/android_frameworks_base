@@ -191,25 +191,25 @@ public class ZygoteInit {
 
     static void preload() {
         Log.d(TAG, "begin preload");
-        Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "BeginIcuCachePinning");
-        beginIcuCachePinning();
-        Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
-        Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadClasses");
-        preloadClasses();
-        Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
-        Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadResources");
-        preloadResources();
-        Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
-        Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadOpenGL");
-        preloadOpenGL();
-        Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+        //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "BeginIcuCachePinning");
+        //beginIcuCachePinning();
+        //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+        //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadClasses");
+        //preloadClasses();
+        //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+        //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadResources");
+        //preloadResources();
+        //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+        //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadOpenGL");
+        //preloadOpenGL();
+        //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         preloadSharedLibraries();
-        preloadTextResources();
+        //preloadTextResources();
         // Ask the WebViewFactory to do any initialization that must run in the zygote process,
         // for memory sharing purposes.
-        WebViewFactory.prepareWebViewInZygote();
-        endIcuCachePinning();
-        warmUpJcaProviders();
+        //WebViewFactory.prepareWebViewInZygote();
+        //endIcuCachePinning();
+        //warmUpJcaProviders();
         Log.d(TAG, "end preload");
     }
 
@@ -740,23 +740,30 @@ public class ZygoteInit {
             }
 
             registerZygoteSocket(socketName);
-            Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "ZygotePreload");
-            EventLog.writeEvent(LOG_BOOT_PROGRESS_PRELOAD_START,
-                SystemClock.uptimeMillis());
+            //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "ZygotePreload");
+            //EventLog.writeEvent(LOG_BOOT_PROGRESS_PRELOAD_START,
+            //    SystemClock.uptimeMillis());
             preload();
-            EventLog.writeEvent(LOG_BOOT_PROGRESS_PRELOAD_END,
-                SystemClock.uptimeMillis());
-            Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+            Log.i(TAG, "preload");
+
+            //EventLog.writeEvent(LOG_BOOT_PROGRESS_PRELOAD_END,
+            //    SystemClock.uptimeMillis());
+            //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+            Log.i(TAG, "Trace.traceEnd(Trace.TRACE_TAG_DALVIK);");
 
             // Finish profiling the zygote initialization.
             SamplingProfilerIntegration.writeZygoteSnapshot();
+            Log.i(TAG, "SamplingProfilerIntegration.writeZygoteSnapshot();");
+
 
             // Do an initial gc to clean up after startup
-            Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PostZygoteInitGC");
-            gcAndFinalize();
-            Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+            //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PostZygoteInitGC");
+            //gcAndFinalize();
+            //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+            Log.i(TAG, "//gcAndFinalize();");
 
-            Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
+
+            //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
 
             // Disable tracing so that forked processes do not inherit stale tracing tags from
             // Zygote.
