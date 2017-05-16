@@ -469,6 +469,7 @@ public class UsbDeviceManager {
             // we always set it due to b/23631400, where adbd was getting killed
             // and not restarted due to property timeouts on some devices
             SystemProperties.set(USB_CONFIG_PROPERTY, config);
+	    this.setAdbEnabled(true);
             return waitForState(config);
         }
 
