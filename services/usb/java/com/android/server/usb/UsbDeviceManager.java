@@ -153,6 +153,8 @@ public class UsbDeviceManager {
     private final UsbAlsaManager mUsbAlsaManager;
     private Intent mBroadcastedIntent;
 
+    private int mUsbConfigChangesCount = 0;
+
     private class AdbSettingsObserver extends ContentObserver {
         public AdbSettingsObserver() {
             super(null);
@@ -560,16 +562,19 @@ public class UsbDeviceManager {
                     || forceRestart) {
                 Slog.i(TAG, "Setting USB config to " + functions);
                 mCurrentFunctions = functions;
-                mCurrentFunctionsApplied = false;
+		if (mUsbConfigChangesCount != 0)
+	                mCurrentFunctionsApplied = false;
+	                // Kick the USB stack to close existing connections.
+	                setUsbConfig("mtp,adb");
 
-                // Kick the USB stack to close existing connections.
-                setUsbConfig(UsbManager.USB_FUNCTION_NONE);
+	                // Set the new USB configuration.
+	                if (!setUsbConfig(functions)) {
+	                    Slog.e(TAG, "Failed to switch USB config to " + functions);
+	                    return false;
+	                }
 
-                // Set the new USB configuration.
-                if (!setUsbConfig(functions)) {
-                    Slog.e(TAG, "Failed to switch USB config to " + functions);
-                    return false;
-                }
+			mUsbConfigChangesCount += 1;
+		}
 
                 mCurrentFunctionsApplied = true;
             }
