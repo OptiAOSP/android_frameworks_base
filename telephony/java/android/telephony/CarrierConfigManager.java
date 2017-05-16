@@ -741,12 +741,6 @@ public class CarrierConfigManager {
             "broadcast_emergency_call_state_changes_bool";
 
     /**
-     * Flag specifying whether CDMA call waiting and call forwarding are enabled
-     * @hide
-     */
-    public static final String KEY_CDMA_CW_CF_ENABLED_BOOL = "cdma_cw_cf_enabled_bool";
-
-    /**
      * Cell broadcast additional channels enbled by the carrier
      * @hide
      */
@@ -761,6 +755,12 @@ public class CarrierConfigManager {
       */
     public static final String KEY_STK_DISABLE_LAUNCH_BROWSER_BOOL =
             "stk_disable_launch_browser_bool";
+
+    /**
+     * Flag specifying whether CDMA call waiting and call forwarding are enabled
+     * @hide
+     */
+    public static final String KEY_CDMA_CW_CF_ENABLED_BOOL = "cdma_cw_cf_enabled_bool";
 
     // These variables are used by the MMS service and exposed through another API, {@link
     // SmsManager}. The variable names and string values are copied from there.
@@ -900,25 +900,6 @@ public class CarrierConfigManager {
     public static final int CDMA_ROAMING_MODE_AFFILIATED = 1;
     /** @hide */
     public static final int CDMA_ROAMING_MODE_ANY = 2;
-
-     /**
-     * Key that determines if ACTIVATE_REJECT_GGSN is to be treated as a permanent error.
-     * @hide
-     */
-    public static final String KEY_REJECT_GGSN_PERM_FAILURE = "reject_ggsn_perm_failure";
-
-    /**
-     * Key that determines if PROTOCOL_ERRORS is  treated as permanent error.
-     * @hide
-     */
-    public static final String KEY_PROTOCOL_ERRORS_PERM_FAILURE = "protocol_errors_perm_failure";
-
-    /**
-     * Key that determines if anonymous users to be mapped to presentation restricted
-     * @hide
-     */
-    public static final String KEY_MAP_ANONYMOUS_TO_RESTRICTED_BOOL =
-            "carrier_map_anonymous_to_restricted";
 
     /**
      * Report IMEI as device id even if it's a CDMA/LTE phone.
@@ -1061,6 +1042,24 @@ public class CarrierConfigManager {
      */
     public static final String KEY_EDITABLE_WFC_ROAMING_MODE_BOOL =
             "editable_wfc_roaming_mode_bool";
+     /**
+     * Key that determines if ACTIVATE_REJECT_GGSN is to be treated as a permanent error.
+     * @hide
+     */
+    public static final String KEY_REJECT_GGSN_PERM_FAILURE = "reject_ggsn_perm_failure";
+
+    /**
+     * Key that determines if PROTOCOL_ERRORS is  treated as permanent error.
+     * @hide
+     */
+    public static final String KEY_PROTOCOL_ERRORS_PERM_FAILURE = "protocol_errors_perm_failure";
+
+    /**
+     * Key that determines if anonymous users to be mapped to presentation restricted
+     * @hide
+     */
+    public static final String KEY_MAP_ANONYMOUS_TO_RESTRICTED_BOOL =
+            "carrier_map_anonymous_to_restricted";
 
     /**
      * Carrier specified WiFi networks.
@@ -1154,7 +1153,7 @@ public class CarrierConfigManager {
         sDefaults.putBoolean(KEY_MDN_IS_ADDITIONAL_VOICEMAIL_NUMBER_BOOL, false);
         sDefaults.putBoolean(KEY_OPERATOR_SELECTION_EXPAND_BOOL, true);
         sDefaults.putBoolean(KEY_PREFER_2G_BOOL, true);
-        sDefaults.putBoolean(KEY_SHOW_APN_SETTING_CDMA_BOOL, true);
+        sDefaults.putBoolean(KEY_SHOW_APN_SETTING_CDMA_BOOL, false);
         sDefaults.putBoolean(KEY_SHOW_CDMA_CHOICES_BOOL, false);
         sDefaults.putBoolean(KEY_SHOW_ONSCREEN_DIAL_BUTTON_BOOL, true);
         sDefaults.putBoolean(KEY_SIM_NETWORK_UNLOCK_ALLOW_DISMISS_BOOL, true);
@@ -1291,12 +1290,12 @@ public class CarrierConfigManager {
         sDefaults.putStringArray(FILTERED_CNAP_NAMES_STRING_ARRAY, null);
         sDefaults.putBoolean(KEY_EDITABLE_WFC_ROAMING_MODE_BOOL, false);
         sDefaults.putBoolean(KEY_STK_DISABLE_LAUNCH_BROWSER_BOOL, false);
-        sDefaults.putBoolean(KEY_MAP_ANONYMOUS_TO_RESTRICTED_BOOL, true);
         sDefaults.putStringArray(KEY_CARRIER_WIFI_STRING_ARRAY, null);
         sDefaults.putInt(KEY_PREF_NETWORK_NOTIFICATION_DELAY_INT, -1);
         sDefaults.putBoolean(KEY_EDITABLE_TETHER_APN_BOOL, false);
         sDefaults.putBoolean(KEY_SUPPORT_3GPP_CALL_FORWARDING_WHILE_ROAMING_BOOL, true);
         sDefaults.putStringArray(KEY_CALL_FORWARDING_BLOCKS_WHILE_ROAMING_STRING_ARRAY, null);
+        sDefaults.putBoolean(KEY_MAP_ANONYMOUS_TO_RESTRICTED_BOOL, true);
     }
 
     /**
