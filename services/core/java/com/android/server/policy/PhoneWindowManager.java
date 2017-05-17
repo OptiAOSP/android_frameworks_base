@@ -1731,6 +1731,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mLongPressOnHomeBehavior == LONG_PRESS_HOME_NOTHING) {
             return;
         }
+
         mHomeConsumed = true;
         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
 
@@ -2102,8 +2103,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void readConfigurationDependentBehaviors() {
         final Resources res = mContext.getResources();
 
-        mLongPressOnHomeBehavior = res.getInteger(
-                com.android.internal.R.integer.config_longPressOnHomeBehavior);
+        mLongPressOnHomeBehavior = LONG_PRESS_HOME_RECENT_SYSTEM_UI; /*res.getInteger(
+                com.android.internal.R.integer.config_longPressOnHomeBehavior)*/;
         if (mLongPressOnHomeBehavior < LONG_PRESS_HOME_NOTHING ||
                 mLongPressOnHomeBehavior > LAST_LONG_PRESS_HOME_BEHAVIOR) {
             mLongPressOnHomeBehavior = LONG_PRESS_HOME_NOTHING;
@@ -3501,6 +3502,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     preloadRecentApps();
                 }
             } else if ((event.getFlags() & KeyEvent.FLAG_LONG_PRESS) != 0) {
+		Log.e(TAG, "home long key press");
                 if (!keyguardOn) {
                     handleLongPressOnHome(event.getDeviceId());
                 }
