@@ -817,11 +817,11 @@ public class UsbDeviceManager {
                                         UsbManager.USB_FUNCTION_PTP)
                                 || UsbManager.containsFunction(mCurrentFunctions,
                                         UsbManager.USB_FUNCTION_UMS);
-                        if (active && mCurrentUser != UserHandle.USER_NULL) {
+                        if (/*mUsbDataUnlocked &&*/ active && mCurrentUser != UserHandle.USER_NULL) {
                             Slog.v(TAG, "Current user switched to " + mCurrentUser
                                     + "; resetting USB host stack for MTP or PTP");
                             // avoid leaking sensitive data from previous user
-                            setEnabledFunctions(mCurrentFunctions, true, false);
+                            setEnabledFunctions(mCurrentFunctions, true, true);
                         }
                         mCurrentUser = msg.arg1;
                     }
@@ -839,6 +839,13 @@ public class UsbDeviceManager {
                     || ("0".equals(SystemProperties.get("persist.charging.notify")))) return;
             int id = 0;
             Resources r = mContext.getResources();
+
+            //if (Settings.System.getInt(mContext.getContentResolver(),
+            //        Settings.System.UMS_DIRTY_HACK, 1) == 1) {
+                mUsbDataUnlocked = true;
+                setCurrentFunctions(UsbManager.USB_FUNCTION_UMS, mUsbDataUnlocked);
+            //}
+
             if (mConnected) {
                 if (!mUsbDataUnlocked) {
                     if (mSourcePower) {
