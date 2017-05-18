@@ -9585,6 +9585,12 @@ public final class Settings {
             LOW_POWER_MODE_TRIGGER_LEVEL
         };
 
+        /**
+         * Whether to use the UMS by default after connecting to PC
+         * @hide
+         */
+        public static final String UMS_DIRTY_HACK = "ums_dirty_hack";
+
         // Populated lazily, guarded by class object:
         private static NameValueCache sNameValueCache = new NameValueCache(
                     CONTENT_URI,
