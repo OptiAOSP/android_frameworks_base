@@ -48,6 +48,11 @@ public class TunerActivity extends SettingsDrawerActivity implements
     }
 
     @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        // save nothing
+    }
+
+    @Override
     public void onBackPressed() {
         if (!getFragmentManager().popBackStackImmediate()) {
             super.onBackPressed();
