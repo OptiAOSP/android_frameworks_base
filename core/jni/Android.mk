@@ -7,7 +7,11 @@ LOCAL_CFLAGS += -U__APPLE__
 LOCAL_CFLAGS += -Wno-unused-parameter
 LOCAL_CFLAGS += -Wno-non-virtual-dtor
 LOCAL_CFLAGS += -Wno-maybe-uninitialized -Wno-parentheses
+
+ifeq ($(TARGET_HWUI_NEW_OPS),true)
 LOCAL_CFLAGS += -DHWUI_NEW_OPS
+endif
+
 LOCAL_CPPFLAGS += -Wno-conversion-null
 
 ifeq ($(TARGET_ARCH), arm)

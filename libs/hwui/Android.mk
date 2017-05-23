@@ -2,7 +2,11 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
+ifeq ($(TARGET_HWUI_NEW_OPS),true)
 HWUI_NEW_OPS := true
+else
+HWUI_NEW_OPS := false
+endif
 BUGREPORT_FONT_CACHE_USAGE := false
 
 # Enables fine-grained GLES error checking
