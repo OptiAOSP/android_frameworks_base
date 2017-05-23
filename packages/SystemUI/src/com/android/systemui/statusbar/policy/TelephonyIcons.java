@@ -222,8 +222,6 @@ class TelephonyIcons {
     static final int ICON_CARRIER_NETWORK_CHANGE =
             R.drawable.stat_sys_signal_carrier_network_change_animation;
 
-    static final int ICON_DATA_DISABLED = R.drawable.stat_sys_data_disabled;
-
     static final int QS_ICON_LTE = R.drawable.ic_qs_signal_lte;
     static final int QS_ICON_3G = R.drawable.ic_qs_signal_3g;
     static final int QS_ICON_4G = R.drawable.ic_qs_signal_4g;
@@ -231,8 +229,6 @@ class TelephonyIcons {
     static final int QS_ICON_1X = R.drawable.ic_qs_signal_1x;
     static final int QS_ICON_CARRIER_NETWORK_CHANGE =
             R.drawable.ic_qs_signal_carrier_network_change_animation;
-
-    static final int QS_ICON_DATA_DISABLED = R.drawable.ic_qs_data_disabled;
 
     static final MobileIconGroup CARRIER_NETWORK_CHANGE = new MobileIconGroup(
             "CARRIER_NETWORK_CHANGE",
@@ -406,21 +402,6 @@ class TelephonyIcons {
             TelephonyIcons.ICON_LTE_PLUS,
             true,
             TelephonyIcons.QS_DATA_LTE_PLUS
-            );
-
-    static final MobileIconGroup DATA_DISABLED = new MobileIconGroup(
-            "DataDisabled",
-            TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH,
-            TelephonyIcons.QS_TELEPHONY_SIGNAL_STRENGTH,
-            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH,
-            0, 0,
-            TelephonyIcons.TELEPHONY_NO_NETWORK,
-            TelephonyIcons.QS_TELEPHONY_NO_NETWORK,
-            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0],
-            R.string.accessibility_cell_data_off,
-            TelephonyIcons.ICON_DATA_DISABLED,
-            false,
-            TelephonyIcons.QS_ICON_DATA_DISABLED
             );
 }
 
