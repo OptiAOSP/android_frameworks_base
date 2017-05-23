@@ -250,6 +250,7 @@ public final class PowerManagerService extends SystemService
     // Timestamp of the last call to user activity.
     private long mLastUserActivityTime;
     private long mLastUserActivityTimeNoChangeLights;
+    private long mLastButtonActivityTime;
 
     // Timestamp of last interactive power hint.
     private long mLastInteractivePowerHintTime;
@@ -1250,6 +1251,11 @@ public final class PowerManagerService extends SystemService
                     return true;
                 }
             } else {
+                if (eventTime > mLastButtonActivityTime && (event & PowerManager.USER_ACTIVITY_EVENT_BUTTON) != 0) {
+                    mLastButtonActivityTime = eventTime;
+                    mDirty |= DIRTY_USER_ACTIVITY;
+                }
+
                 if (eventTime > mLastUserActivityTime) {
                     mLastUserActivityTime = eventTime;
                     mDirty |= DIRTY_USER_ACTIVITY;
@@ -1800,7 +1806,7 @@ public final class PowerManagerService extends SystemService
                     nextTimeout = mLastUserActivityTime
                             + screenOffTimeout - screenDimDuration;
                     if (now < nextTimeout) {
-                        if (now > mLastUserActivityTime + BUTTON_ON_DURATION) {
+                        if (now > mLastButtonActivityTime + BUTTON_ON_DURATION) {
                             mButtonsLight.setBrightness(0);
                         } else {
                             mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
