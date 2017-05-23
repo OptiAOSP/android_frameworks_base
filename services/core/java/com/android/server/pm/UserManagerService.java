@@ -1734,6 +1734,9 @@ public class UserManagerService extends IUserManager.Stub {
             }
             updateUserIds();
             upgradeIfNecessaryLP();
+            if (mUsers.get(UserHandle.USER_SYSTEM) == null) {
+                fallbackToSingleUserLP();
+            }
         } catch (IOException | XmlPullParserException e) {
             fallbackToSingleUserLP();
         } finally {
