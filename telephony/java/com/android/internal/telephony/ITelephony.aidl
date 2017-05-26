@@ -552,6 +552,12 @@ interface ITelephony {
      */
     void setCellInfoListRate(int rateInMillis);
 
+
+    /**
+     * Return if the current radio is LTE on GSM
+     */
+    int getLteOnGsmMode();
+
     /**
      * get default sim
      * @return sim id
@@ -569,7 +575,7 @@ interface ITelephony {
      */
     IccOpenLogicalChannelResponse iccOpenLogicalChannel(int subId, String AID);
 
-     /**
+    /**
      * Opens a logical channel to the ICC card for a particular subID
      *
      * @param subId user preferred subId.
@@ -1002,6 +1008,11 @@ interface ITelephony {
     boolean isImsRegistered();
 
     /**
+     * Get IMS Registration Status using subId
+     */
+    boolean isImsRegisteredForSubscriber(int subId);
+
+    /**
      * Returns the Status of Wi-Fi Calling
      */
     boolean isWifiCallingAvailable();
@@ -1103,6 +1114,12 @@ interface ITelephony {
     List<String> getPackagesWithCarrierPrivileges();
 
     /**
+     * Get ATR (Answer To Reset; as per ISO/IEC 7816-4) from SIM card
+     * for a particular subId.
+     */
+    byte[] getAtr(int subId);
+
+    /**
      * Return the application ID for the app type.
      *
      * @param subId the subscription ID that this request applies to.
@@ -1192,11 +1209,4 @@ interface ITelephony {
      * @hide
      */
     void setPolicyDataEnabled(boolean enabled, int subId);
-
-
-    /**
-     * Get ATR (Answer To Reset; as per ISO/IEC 7816-4) from SIM card
-     * for a particular subId.
-     */
-    byte[] getAtr(int subId);
 }

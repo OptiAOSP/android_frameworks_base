@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ * Not a Contribution.
+ *
  * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +25,7 @@ import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.app.ActivityThread;
 import android.content.ContentResolver;
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -794,6 +798,9 @@ public class TelephonyManager {
     /** {@hide} */
     public static final String EMR_DIAL_ACCOUNT = "emr_dial_account";
 
+    /** {@hide} */
+    public static final String EXTRA_IS_FORWARDED = "is_forwarded";
+
     //
     //
     // Device Info
@@ -1171,7 +1178,7 @@ public class TelephonyManager {
     private int getPhoneTypeFromProperty(int phoneId) {
         String type = getTelephonyProperty(phoneId,
                 TelephonyProperties.CURRENT_ACTIVE_PHONE, null);
-        if (type == null || type.equals("")) {
+        if (type == null || type.isEmpty()) {
             return getPhoneTypeFromNetworkType(phoneId);
         }
         return Integer.parseInt(type);
@@ -1187,7 +1194,7 @@ public class TelephonyManager {
         // use the system property for default network type.
         // This is a fail safe, and can only happen at first boot.
         String mode = getTelephonyProperty(phoneId, "ro.telephony.default_network", null);
-        if (mode != null) {
+        if (mode != null && !mode.isEmpty()) {
             return TelephonyManager.getPhoneType(Integer.parseInt(mode));
         }
         return TelephonyManager.PHONE_TYPE_NONE;
@@ -1319,6 +1326,15 @@ public class TelephonyManager {
                 " product_type='" + productType +
                 "' lteOnCdmaProductType='" + sLteOnCdmaProductType + "'");
         return retVal;
+    }
+
+    /**
+     * Return if the current radio is LTE on GSM
+     * @hide
+     */
+    public static int getLteOnGsmModeStatic() {
+        return SystemProperties.getInt(TelephonyProperties.PROPERTY_LTE_ON_GSM_DEVICE,
+                    0);
     }
 
     //
@@ -1599,7 +1615,7 @@ public class TelephonyManager {
      * @see #NETWORK_TYPE_HSPAP
      */
     public int getDataNetworkType() {
-        return getDataNetworkType(getSubId());
+        return getDataNetworkType(getDefaultDataSubscriptionId());
     }
 
     /**
@@ -2134,6 +2150,21 @@ public class TelephonyManager {
         } catch (NullPointerException ex) {
             // This could happen before phone restarts due to crashing
             return PhoneConstants.LTE_ON_CDMA_UNKNOWN;
+        }
+    }
+
+    /**
+     * Return if the current radio is LTE on GSM
+     * @hide
+     */
+    public int getLteOnGsmMode() {
+        try {
+            return getITelephony().getLteOnGsmMode();
+        } catch (RemoteException ex) {
+            return 0;
+        } catch (NullPointerException ex) {
+            // This could happen before phone restarts due to crashing
+            return 0;
         }
     }
 
@@ -3689,6 +3720,13 @@ public class TelephonyManager {
     }
 
     /**
+     * Returns Default Data subscription.
+     */
+    private static int getDefaultDataSubscriptionId() {
+        return SubscriptionManager.getDefaultDataSubscriptionId();
+    }
+
+    /**
      * Returns Default phone.
      */
     private static int getDefaultPhone() {
@@ -4768,7 +4806,7 @@ public class TelephonyManager {
     /** @hide */
     @SystemApi
     public void setDataEnabled(boolean enable) {
-        setDataEnabled(SubscriptionManager.getDefaultDataSubscriptionId(), enable);
+        setDataEnabled(getDefaultDataSubscriptionId(), enable);
     }
 
     /** @hide */
@@ -4780,14 +4818,14 @@ public class TelephonyManager {
             if (telephony != null)
                 telephony.setDataEnabled(subId, enable);
         } catch (RemoteException e) {
-            Log.e(TAG, "Error calling ITelephony#setDataEnabled", e);
+            Log.e(TAG, "Error calling setDataEnabled", e);
         }
     }
 
     /** @hide */
     @SystemApi
     public boolean getDataEnabled() {
-        return getDataEnabled(SubscriptionManager.getDefaultDataSubscriptionId());
+        return getDataEnabled(getDefaultDataSubscriptionId());
     }
 
     /** @hide */
@@ -4984,6 +5022,24 @@ public class TelephonyManager {
        }
    }
 
+   /**
+    * Returns the IMS Registration Status
+    * using subId
+    * @hide
+    */
+   public boolean isImsRegisteredForSubscriber(int subId) {
+       try {
+           ITelephony telephony = getITelephony();
+           if (telephony == null)
+               return false;
+           return telephony.isImsRegisteredForSubscriber(subId);
+       } catch (RemoteException ex) {
+           return false;
+       } catch (NullPointerException ex) {
+           return false;
+       }
+   }
+
     /**
      * Returns the Status of Volte
      * @hide
@@ -5128,6 +5184,12 @@ public class TelephonyManager {
         if (SubscriptionManager.isValidPhoneId(phoneId)) {
             String prop = TelephonyProperties.PROPERTY_BASEBAND_VERSION +
                     ((phoneId == 0) ? "" : Integer.toString(phoneId));
+            if (version != null && version.length() > SystemProperties.PROP_VALUE_MAX) {
+                Log.e(TAG, "setBasebandVersionForPhone(): version string '" + version +
+                        "' too long! (" + version.length() +
+                        " > " + SystemProperties.PROP_VALUE_MAX + ")");
+                version = version.substring(0, SystemProperties.PROP_VALUE_MAX);
+            }
             SystemProperties.set(prop, version);
         }
     }
