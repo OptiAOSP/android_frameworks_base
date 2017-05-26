@@ -2678,6 +2678,50 @@
   <java-symbol type="layout" name="unsupported_display_size_dialog_content" />
   <java-symbol type="string" name="unsupported_display_size_message" />
 
+  <!-- SIM contact batch operation -->
+  <java-symbol type="bool" name="config_sim_phonebook_batch_operation" />
+
+  <java-symbol type="string" name="operator_config_url" />
+  <java-symbol type="string" name="operator_ping_url" />
+  <java-symbol type="bool" name="config_zero_balance_operator"/>
+  <!-- Symbols/Overlays for carrier hotspot -->
+  <java-symbol type="bool" name="config_regional_hotspot_show_maximum_connection_enable" />
+
+  <!-- keypress optimization -->
+  <java-symbol type="bool" name="config_enableKeypressOptimization" />
+  <java-symbol type="array" name="keypress_param_value" />
+  <java-symbol type="bool" name="config_enableDataSwitch" />
+  <!-- Symbols/Overlays for Network settings -->
+  <java-symbol type="bool" name="config_regional_mcc_mnc_roaming_setting" />
+  <!-- Symbols/Overlays for Network settings start -->
+  <java-symbol type="bool" name="config_regional_lte_singnal_threshold" />
+  <java-symbol type="bool" name="config_regional_umts_singnal_threshold" />
+
+  <java-symbol type="array" name="umts_signal_strength_threshold" />
+  <java-symbol type="array" name="lte_signal_strength_threshold" />
+
+  <java-symbol type="bool" name="config_regional_hotspot_show_broadcast_ssid_checkbox" />
+  <java-symbol type="bool" name="config_regional_hotspot_show_notification_when_turn_on" />
+
+  <java-symbol type="bool" name="config_video_call_datausage_enable" />
+  <java-symbol type="bool" name="config_showOperatorNameInStatusBar" />
+  <java-symbol type="bool" name="config_passpoint_setting_on" />
+  <java-symbol type="integer" name="wifi_hotspot_security_type" />
+  <java-symbol type="string" name="def_wifi_wifihotspot_pass" />
+  <java-symbol type="string" name="def_wifi_direct_name" />
+
+  <java-symbol type="string" name="power_key_emergency_number" />
+  <java-symbol type="integer" name="power_key_hits_emergency" />
+  <java-symbol type="bool" name="config_emergencyCallOnPowerkeyTapGestureEnabled" />
+  <java-symbol type="bool" name="config_usb_data_unlock" />
+  <java-symbol type="bool" name="config_volte_preferred" />
+  <java-symbol type="bool" name="operator_custom_sim_icon" />
+  <!-- config softap extention feature -->
+  <java-symbol type="bool" name="config_softap_extention" />
+  <java-symbol type="array" name="config_operatorConsideredDomesticRoaming" />
+  <java-symbol type="array" name="config_operatorConsideredDomesticRoamingExceptions" />
+  <!-- config softap extention feature -->
+  <java-symbol type="string" name="def_custom_bt_defname" />
   <java-symbol type="layout" name="notification_material_action_emphasized" />
 
   <!-- Package name for the device provisioning package -->
