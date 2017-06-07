@@ -2797,6 +2797,12 @@
   <java-symbol type="bool" name="config_samsung_stk" />
   <java-symbol type="bool" name="config_usb_data_unlock" />
   <!-- Symbols/Overlays for Network settings start -->
+  <java-symbol type="bool" name="config_regional_lte_singnal_threshold" />
+  <java-symbol type="bool" name="config_regional_umts_singnal_threshold" />
+
+  <java-symbol type="array" name="umts_signal_strength_threshold" />
+  <java-symbol type="array" name="lte_signal_strength_threshold" />
+
 <!--
   <java-symbol type="bool" name="config_regional_lte_singnal_threshold" />
   <java-symbol type="bool" name="config_regional_umts_singnal_threshold" />
