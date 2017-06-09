@@ -336,7 +336,9 @@ public class UsbDeviceManager {
         private boolean mSinkPower;
         private boolean mConfigured;
         private boolean mUsbDataUnlocked;
+        private boolean mUsbHackUsedOnce;
         private String mCurrentFunctions;
+        private String mPersistFunctions;
         private boolean mCurrentFunctionsApplied;
         private UsbAccessory mCurrentAccessory;
         private int mUsbNotificationId;
@@ -352,8 +354,8 @@ public class UsbDeviceManager {
                         UsbManager.USB_FUNCTION_NONE);
                 mCurrentFunctionsApplied = mCurrentFunctions.equals(
                         SystemProperties.get(USB_STATE_PROPERTY));
-                mAdbEnabled = UsbManager.containsFunction(getDefaultFunctions(),
-                        UsbManager.USB_FUNCTION_ADB);
+                mAdbEnabled = true; /*UsbManager.containsFunction(getDefaultFunctions(),
+                        UsbManager.USB_FUNCTION_ADB);*/
 
                 /**
                  * Remove MTP from persistent config, to bring usb to a good state
@@ -365,7 +367,6 @@ public class UsbDeviceManager {
                             UsbManager.removeFunction(persisted, UsbManager.USB_FUNCTION_MTP));
                 }
 
-                setEnabledFunctions(null, false, false);
                 if (mContext.getResources().getBoolean(
                         com.android.internal.R.bool.config_usb_data_unlock)) {
                     boolean mtpEnable = UsbManager.containsFunction(getDefaultFunctions(),
@@ -374,7 +375,7 @@ public class UsbDeviceManager {
                             UsbManager.USB_FUNCTION_PTP);
                     boolean umsEnable = UsbManager.containsFunction(getDefaultFunctions(),
                             UsbManager.USB_FUNCTION_UMS);
-                    if (mtpEnable || ptpEnable) mUsbDataUnlocked = true;
+                    if (mtpEnable || ptpEnable || umsEnable) mUsbDataUnlocked = true;
                 }
                 String state = FileUtils.readTextFile(new File(STATE_PATH), 0, null).trim();
                 updateState(state);
@@ -493,12 +494,13 @@ public class UsbDeviceManager {
                 SystemProperties.set(USB_PERSISTENT_CONFIG_PROPERTY, newFunction);
 
                 // Remove mtp from the config if file transfer is not enabled
+/*
                 if (oldFunctions.equals(UsbManager.USB_FUNCTION_MTP) &&
                         !mUsbDataUnlocked && enable) {
                     oldFunctions = UsbManager.USB_FUNCTION_NONE;
                 }
-
-                setEnabledFunctions(oldFunctions, true, mUsbDataUnlocked);
+*/
+                setEnabledFunctions(oldFunctions, true, true);
                 updateAdbNotification();
             }
 
@@ -514,6 +516,8 @@ public class UsbDeviceManager {
                 boolean usbDataUnlocked) {
             if (DEBUG) Slog.d(TAG, "setEnabledFunctions functions=" + functions + ", "
                     + "forceRestart=" + forceRestart);
+
+	    usbDataUnlocked = true;
 
             if (usbDataUnlocked != mUsbDataUnlocked) {
                 mUsbDataUnlocked = usbDataUnlocked;
@@ -622,8 +626,8 @@ public class UsbDeviceManager {
             } else if (!enteringAccessoryMode) {
                 // make sure accessory mode is off
                 // and restore default functions
-                Slog.d(TAG, "exited USB accessory mode");
-                setEnabledFunctions(null, false, false);
+                //Slog.d(TAG, "exited USB accessory mode");
+                //setEnabledFunctions(null, false, false);
 
                 if (mCurrentAccessory != null) {
                     if (mBootCompleted) {
@@ -759,10 +763,8 @@ public class UsbDeviceManager {
                     if (UsbManager.containsFunction(mCurrentFunctions,
                             UsbManager.USB_FUNCTION_ACCESSORY)) {
                         updateCurrentAccessory();
-                    } else if (!mConnected) {
-                        // restore defaults when USB is disconnected
-                        setEnabledFunctions(null, false, false);
                     }
+
                     if (mBootCompleted) {
                         updateUsbStateBroadcastIfNeeded();
                         updateUsbFunctions();
@@ -821,7 +823,7 @@ public class UsbDeviceManager {
                             Slog.v(TAG, "Current user switched to " + mCurrentUser
                                     + "; resetting USB host stack for MTP or PTP");
                             // avoid leaking sensitive data from previous user
-                            setEnabledFunctions(mCurrentFunctions, true, false);
+                            setEnabledFunctions(mCurrentFunctions, true, true);
                         }
                         mCurrentUser = msg.arg1;
                     }
@@ -839,6 +841,23 @@ public class UsbDeviceManager {
                     || ("0".equals(SystemProperties.get("persist.charging.notify")))) return;
             int id = 0;
             Resources r = mContext.getResources();
+
+	    mUsbDataUnlocked = true;
+            if (mConnected) {
+                    if (!mUsbHackUsedOnce) {
+                            mPersistFunctions = getDefaultFunctions();
+
+                            if (UsbManager.containsFunction(mPersistFunctions,
+                                  UsbManager.USB_FUNCTION_UMS)) {
+                                  setCurrentFunctions(UsbManager.USB_FUNCTION_UMS, mUsbDataUnlocked);
+                            } else
+                                  setCurrentFunctions(UsbManager.USB_FUNCTION_MTP, mUsbDataUnlocked);
+
+                            mUsbHackUsedOnce = true;
+           	    }
+	    } else
+                    mUsbHackUsedOnce = false;
+
             if (mConnected) {
                 if (!mUsbDataUnlocked) {
                     if (mSourcePower) {
