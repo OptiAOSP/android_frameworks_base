@@ -201,7 +201,7 @@ public class ZygoteInit {
         //preloadResources();
         //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadOpenGL");
-        //preloadOpenGL();
+        preloadOpenGL();
         //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         preloadSharedLibraries();
         //preloadTextResources();
