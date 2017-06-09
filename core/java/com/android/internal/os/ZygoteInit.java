@@ -195,7 +195,7 @@ public class ZygoteInit {
         //beginIcuCachePinning();
         //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadClasses");
-        //preloadClasses();
+        preloadClasses();
         //Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         //Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadResources");
         //preloadResources();
