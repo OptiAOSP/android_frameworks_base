@@ -110,7 +110,7 @@ public class DimLayer {
             if (SHOW_TRANSACTIONS || SHOW_SURFACE_ALLOC) Slog.i(TAG,
                     "  DIM " + mDimSurface + ": CREATE");
             mDimSurface.setLayerStack(mDisplayId);
-            adjustBounds();
+            adjustBounds(false);
             adjustAlpha(mAlpha);
             adjustLayer(mLayer);
         } catch (Exception e) {
@@ -187,13 +187,13 @@ public class DimLayer {
     /**
      * NOTE: Must be called with Surface transaction open.
      */
-    private void adjustBounds() {
-        if (mUser.dimFullscreen()) {
+    private void adjustBounds(boolean fullscreenChecked) {
+        if (!fullscreenChecked && mUser.dimFullscreen()) {
             getBoundsForFullscreen(mBounds);
         }
 
         if (mDimSurface != null) {
-            if(!mLastBounds.equals(mBounds)) {
+            if (!mLastBounds.equals(mBounds)) {
                  mDimSurface.setPosition(mBounds.left, mBounds.top);
                  mDimSurface.setSize(mBounds.width(), mBounds.height());
                  if (DEBUG_DIM_LAYER) Slog.v(TAG,
@@ -226,10 +226,17 @@ public class DimLayer {
     /** @param bounds The new bounds to set */
     void setBounds(Rect bounds) {
         mBounds.set(bounds);
-        if (isDimming() && !mLastBounds.equals(bounds)) {
+        if (isDimming() && !mLastBounds.equals(mBounds)) {
+            // Avoid opening a transaction if adjustBounds will do nothing
+            if (mUser.dimFullscreen()) {
+                getBoundsForFullscreen(mBounds);
+                if (mLastBounds.equals(mBounds)) {
+                    return;
+                }
+            }
             try {
                 SurfaceControl.openTransaction();
-                adjustBounds();
+                adjustBounds(true);
             } catch (RuntimeException e) {
                 Slog.w(TAG, "Failure setting size", e);
             } finally {
@@ -278,7 +285,7 @@ public class DimLayer {
         }
 
         if (!mLastBounds.equals(mBounds)) {
-            adjustBounds();
+            adjustBounds(false);
         }
         setLayer(layer);
 
