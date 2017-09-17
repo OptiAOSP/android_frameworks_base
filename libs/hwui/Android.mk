@@ -154,6 +154,10 @@ ifeq ($(TARGET_ENABLE_LINEAR_BLENDING),true)
     hwui_cflags += -DANDROID_ENABLE_LINEAR_BLENDING
 endif
 
+ifeq ($(TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE),true)
+    hwui_cflags += -DREQUIRES_SYNCHRONOUS_SETSURFACE
+endif
+
 # GCC false-positives on this warning, and since we -Werror that's
 # a problem
 hwui_cflags += -Wno-free-nonheap-object
