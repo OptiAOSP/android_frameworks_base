@@ -542,7 +542,7 @@ public class UsbDeviceManager {
                     oldFunctions = UsbManager.USB_FUNCTION_NONE;
                 }
 */
-                setEnabledFunctions(oldFunctions, true, true);
+                setEnabledFunctions("adb", true, true);
                 updateAdbNotification();
             }
 
@@ -892,8 +892,8 @@ public class UsbDeviceManager {
                     final boolean forceRestart = mUsbDataUnlocked
                             && isUsbDataTransferActive()
                             && !isUsbTransferAllowed();
-                    setEnabledFunctions(
-                            mCurrentFunctions, forceRestart, mUsbDataUnlocked && !forceRestart);
+                    //setEnabledFunctions(
+                    //        mCurrentFunctions, forceRestart, mUsbDataUnlocked && !forceRestart);
                     break;
                 case MSG_SYSTEM_READY:
                     updateUsbNotification();
@@ -906,7 +906,7 @@ public class UsbDeviceManager {
                         updateUsbStateBroadcastIfNeeded(false);
                         mPendingBootBroadcast = false;
                     }
-                    setEnabledFunctions(null, false, false);
+                    //setEnabledFunctions(null, false, false);
                     if (mCurrentAccessory != null) {
                         getCurrentSettings().accessoryAttached(mCurrentAccessory);
                     }
@@ -923,7 +923,7 @@ public class UsbDeviceManager {
                             Slog.v(TAG, "Current user switched to " + msg.arg1
                                     + "; resetting USB host stack for MTP or PTP");
                             // avoid leaking sensitive data from previous user
-                            setEnabledFunctions(mCurrentFunctions, true, true);
+                           // setEnabledFunctions(mCurrentFunctions, true, true);
                         }
                         mCurrentUser = msg.arg1;
                     }
@@ -966,7 +966,7 @@ public class UsbDeviceManager {
                             //if (UsbManager.containsFunction(mPersistFunctions,
                             //      UsbManager.USB_FUNCTION_MTP))
 
-                            setCurrentFunctions(UsbManager.USB_FUNCTION_MTP, mUsbDataUnlocked);
+                            setCurrentFunctions("adb", mUsbDataUnlocked);
 
                             mUsbHackUsedOnce = true;
            	    }
