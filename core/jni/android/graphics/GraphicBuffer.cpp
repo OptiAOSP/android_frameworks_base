@@ -110,9 +110,7 @@ static jlong android_graphics_GraphicBuffer_create(JNIEnv* env, jobject clazz,
         jint width, jint height, jint format, jint usage) {
 
     sp<GraphicBuffer> buffer = new GraphicBuffer(
-            uint32_t(width), uint32_t(height), PixelFormat(format), uint32_t(usage),
-            std::string("android_graphics_GraphicBuffer_create pid [") +
-                    std::to_string(getpid()) +"]");
+            uint32_t(width), uint32_t(height), PixelFormat(format), uint32_t(usage));
 
     status_t error = buffer->initCheck();
     if (error < 0) {

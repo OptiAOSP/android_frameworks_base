@@ -82,8 +82,8 @@ static jlong android_hardware_HardwareBuffer_create(JNIEnv* env, jobject clazz,
     }
 
     uint64_t grallocUsage = AHardwareBuffer_convertToGrallocUsageBits(usage);
-    sp<GraphicBuffer> buffer = new GraphicBuffer(width, height, pixelFormat, layers,
-            grallocUsage, std::string("HardwareBuffer pid [") + std::to_string(getpid()) +"]");
+    sp<GraphicBuffer> buffer = new GraphicBuffer(width, height, pixelFormat,
+             grallocUsage);
     status_t error = buffer->initCheck();
     if (error < 0) {
         if (kDebugGraphicBuffer) {
@@ -134,8 +134,7 @@ static jint android_hardware_HardwareBuffer_getFormat(JNIEnv* env,
 
 static jint android_hardware_HardwareBuffer_getLayers(JNIEnv* env,
     jobject clazz, jlong nativeObject) {
-    GraphicBuffer* buffer = GraphicBufferWrapper_to_GraphicBuffer(nativeObject);
-    return static_cast<jint>(buffer->getLayerCount());
+    return static_cast<jint>(1);
 }
 
 static jlong android_hardware_HardwareBuffer_getUsage(JNIEnv* env,

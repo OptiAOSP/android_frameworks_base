@@ -234,8 +234,7 @@ sk_sp<Bitmap> Bitmap::allocateHardwareBitmap(uirenderer::renderthread::RenderThr
     sp<GraphicBuffer> buffer = new GraphicBuffer(info.width(), info.height(), pixelFormat,
             GraphicBuffer::USAGE_HW_TEXTURE |
             GraphicBuffer::USAGE_SW_WRITE_NEVER |
-            GraphicBuffer::USAGE_SW_READ_NEVER,
-            std::string("Bitmap::allocateHardwareBitmap pid [") + std::to_string(getpid()) + "]");
+            GraphicBuffer::USAGE_SW_READ_NEVER);
 
     status_t error = buffer->initCheck();
     if (error < 0) {
