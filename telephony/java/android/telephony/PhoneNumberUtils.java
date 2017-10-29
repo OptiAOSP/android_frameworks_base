@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.location.Country;
 import android.location.CountryDetector;
 import android.net.Uri;
 import android.os.SystemProperties;
@@ -80,6 +81,7 @@ public class PhoneNumberUtils
     static final String LOG_TAG = "PhoneNumberUtils";
     private static final boolean DBG = false;
 
+    private static Country sCountryDetector = null;
     /*
      * global-phone-number = ["+"] 1*( DIGIT / written-sep )
      * written-sep         = ("-"/".")
@@ -1140,6 +1142,8 @@ public class PhoneNumberUtils
 
     private static final String KOREA_ISO_COUNTRY_CODE = "KR";
 
+    private static final String JAPAN_ISO_COUNTRY_CODE = "JP";
+
     /**
      * Breaks the given number down and formats it according to the rules
      * for the country the number is from.
@@ -1460,15 +1464,25 @@ public class PhoneNumberUtils
         String result = null;
         try {
             PhoneNumber pn = util.parseAndKeepRawInput(phoneNumber, defaultCountryIso);
-            /**
-             * Need to reformat any local Korean phone numbers (when the user is in Korea) with
-             * country code to corresponding national format which would replace the leading
-             * +82 with 0.
-             */
-            if (KOREA_ISO_COUNTRY_CODE.equals(defaultCountryIso) &&
+
+            if (KOREA_ISO_COUNTRY_CODE.equalsIgnoreCase(defaultCountryIso) &&
                     (pn.getCountryCode() == util.getCountryCodeForRegion(KOREA_ISO_COUNTRY_CODE)) &&
                     (pn.getCountryCodeSource() ==
                             PhoneNumber.CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN)) {
+                /**
+                 * Need to reformat any local Korean phone numbers (when the user is in Korea) with
+                 * country code to corresponding national format which would replace the leading
+                 * +82 with 0.
+                 */
+                result = util.format(pn, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
+            } else if (JAPAN_ISO_COUNTRY_CODE.equalsIgnoreCase(defaultCountryIso) &&
+                    pn.getCountryCode() == util.getCountryCodeForRegion(JAPAN_ISO_COUNTRY_CODE) &&
+                    (pn.getCountryCodeSource() ==
+                            PhoneNumber.CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN)) {
+                /**
+                 * Need to reformat Japanese phone numbers (when user is in Japan) with the national
+                 * dialing format.
+                 */
                 result = util.format(pn, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
             } else {
                 result = util.formatInOriginalFormat(pn, defaultCountryIso);
@@ -2058,18 +2072,37 @@ public class PhoneNumberUtils
     private static boolean isLocalEmergencyNumberInternal(int subId, String number,
                                                           Context context,
                                                           boolean useExactMatch) {
-        String countryIso;
-        CountryDetector detector = (CountryDetector) context.getSystemService(
-                Context.COUNTRY_DETECTOR);
-        if (detector != null && detector.detectCountry() != null) {
-            countryIso = detector.detectCountry().getCountryIso();
-        } else {
+        String countryIso = getCountryIso(context);
+        Rlog.w(LOG_TAG, "isLocalEmergencyNumberInternal" + countryIso);
+        if (countryIso == null) {
             Locale locale = context.getResources().getConfiguration().locale;
             countryIso = locale.getCountry();
             Rlog.w(LOG_TAG, "No CountryDetector; falling back to countryIso based on locale: "
                     + countryIso);
         }
         return isEmergencyNumberInternal(subId, number, countryIso, useExactMatch);
+    }
+
+    private static String getCountryIso(Context context) {
+        Rlog.w(LOG_TAG, "getCountryIso " + sCountryDetector);
+        if (sCountryDetector == null) {
+            CountryDetector detector = (CountryDetector) context.getSystemService(
+                Context.COUNTRY_DETECTOR);
+            if (detector != null) {
+                sCountryDetector = detector.detectCountry();
+            }
+        }
+
+        if (sCountryDetector == null) {
+            return null;
+        } else {
+            return sCountryDetector.getCountryIso();
+        }
+    }
+
+    /** @hide */
+    public static void resetCountryDetectorInfo() {
+        sCountryDetector = null;
     }
 
     /**
@@ -2352,8 +2385,9 @@ public class PhoneNumberUtils
                 if (useNanp) {
                     networkDialStr = extractNetworkPortion(tempDialStr);
                 } else  {
-                    networkDialStr = extractNetworkPortionAlt(tempDialStr);
-
+                    Rlog.e("cdmaCheckAndProcessPlusCodeByNumberFormat:non-NANP not supported",
+                            dialStr);
+                    return dialStr;
                 }
 
                 networkDialStr = processPlusCode(networkDialStr, useNanp);

@@ -171,6 +171,7 @@ public class CallerInfo {
      * number. The returned CallerInfo is null if no number is supplied.
      */
     public static CallerInfo getCallerInfo(Context context, Uri contactRef, Cursor cursor) {
+        android.util.SeempLog.record_uri(12, contactRef);
         CallerInfo info = new CallerInfo();
         info.photoResource = 0;
         info.phoneLabel = null;
@@ -343,6 +344,7 @@ public class CallerInfo {
      * with all relevant fields empty or null.
      */
     public static CallerInfo getCallerInfo(Context context, String number, int subId) {
+        android.util.SeempLog.record_str(12, "number="+number+",subId="+subId);
 
         if (TextUtils.isEmpty(number)) {
             return null;
@@ -576,7 +578,7 @@ public class CallerInfo {
      * @return a geographical description string for the specified number.
      * @see com.android.i18n.phonenumbers.PhoneNumberOfflineGeocoder
      */
-    private static String getGeoDescription(Context context, String number) {
+    public static String getGeoDescription(Context context, String number) {
         if (VDBG) Rlog.v(TAG, "getGeoDescription('" + number + "')...");
 
         if (TextUtils.isEmpty(number)) {
