@@ -565,7 +565,7 @@ public final class SystemServer {
                 false);
 
         boolean isEmulator = SystemProperties.get("ro.kernel.qemu").equals("1");
-        boolean disableAtlas = SystemProperties.getBoolean("config.disable_atlas", false);
+        boolean disableAtlas = true; //SystemProperties.getBoolean("config.disable_atlas", false);
 
         try {
             Slog.i(TAG, "Reading configuration...");
