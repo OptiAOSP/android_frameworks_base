@@ -233,10 +233,10 @@ public class SubscriptionInfo implements Parcelable {
         final float xOffset = (width / 2.f) - textBound.centerX();
         final float yOffset = (height / 2.f) - textBound.centerY();
         // check for Custom sim icon feature
-        if (!context.getResources().getBoolean(
-                com.android.internal.R.bool.operator_custom_sim_icon)) {
-            canvas.drawText(index, xOffset, yOffset, paint);
-        }
+        //if (!context.getResources().getBoolean(
+        //        com.android.internal.R.bool.operator_custom_sim_icon)) {
+        //    canvas.drawText(index, xOffset, yOffset, paint);
+        //}
 
         return workingBitmap;
     }
