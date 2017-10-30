@@ -44,7 +44,7 @@ hostSources := $(commonSources)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libandroidfw
-LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_MODULE_HOST_OS := linux
 LOCAL_CFLAGS += -DSTATIC_ANDROIDFW_FOR_TOOLS
 LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
 LOCAL_SRC_FILES:= $(hostSources)

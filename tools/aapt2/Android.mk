@@ -157,7 +157,7 @@ protoIncludes := $(call generated-sources-dir-for,STATIC_LIBRARIES,libaapt2,HOST
 include $(CLEAR_VARS)
 LOCAL_MODULE := libaapt2
 LOCAL_MODULE_CLASS := STATIC_LIBRARIES
-LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_MODULE_HOST_OS := linux
 LOCAL_CFLAGS := $(cFlags)
 LOCAL_CFLAGS_darwin := $(cFlags_darwin)
 LOCAL_CFLAGS_windows := $(cFlags_windows)
@@ -174,7 +174,7 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := libaapt2_tests
 LOCAL_MODULE_TAGS := tests
-LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_MODULE_HOST_OS := linux
 LOCAL_CFLAGS := $(cFlags)
 LOCAL_CFLAGS_darwin := $(cFlags_darwin)
 LOCAL_CFLAGS_windows := $(cFlags_windows)
@@ -193,7 +193,7 @@ include $(BUILD_HOST_NATIVE_TEST)
 # ==========================================================
 include $(CLEAR_VARS)
 LOCAL_MODULE := aapt2
-LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_MODULE_HOST_OS := linux
 LOCAL_CFLAGS := $(cFlags)
 LOCAL_CFLAGS_darwin := $(cFlags_darwin)
 LOCAL_CFLAGS_windows := $(cFlags_windows)
@@ -205,6 +205,7 @@ LOCAL_STATIC_LIBRARIES_windows := $(hostStaticLibs_windows)
 LOCAL_LDLIBS := $(hostLdLibs)
 LOCAL_LDLIBS_darwin := $(hostLdLibs_darwin)
 LOCAL_LDLIBS_linux := $(hostLdLibs_linux)
+LOCAL_FORCE_STATIC_EXECUTABLE := true
 include $(BUILD_HOST_EXECUTABLE)
 
 ifeq ($(ONE_SHOT_MAKEFILE),)
