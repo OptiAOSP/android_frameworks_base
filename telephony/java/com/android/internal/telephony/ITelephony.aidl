@@ -1284,6 +1284,7 @@ interface ITelephony {
      */
     void setPolicyDataEnabled(boolean enabled, int subId);
 
+
     /**
      * Get Client request stats which will contain statistical information
      * on each request made by client.
@@ -1301,7 +1302,6 @@ interface ITelephony {
      * */
     void setSimPowerStateForSlot(int slotIndex, boolean powerUp);
 
-    /**
      * Returns a list of Forbidden PLMNs from the specified SIM App
      * Returns null if the query fails.
      *
