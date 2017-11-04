@@ -4422,6 +4422,9 @@ public class TelephonyManager {
      * Returns an array of Forbidden PLMNs from the USIM App
      * Returns null if the query fails.
      *
+     *
+     * <p>Requires that the caller has READ_PRIVILEGED_PHONE_STATE
+     *
      * @return an array of forbidden PLMNs or null if not available
      */
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
@@ -4432,6 +4435,9 @@ public class TelephonyManager {
     /**
      * Returns an array of Forbidden PLMNs from the specified SIM App
      * Returns null if the query fails.
+     *
+     *
+     * <p>Requires that the calling app has READ_PRIVILEGED_PHONE_STATE
      *
      * @param subId subscription ID used for authentication
      * @param appType the icc application type, like {@link #APPTYPE_USIM}
