@@ -1302,17 +1302,6 @@ interface ITelephony {
      * */
     void setSimPowerStateForSlot(int slotIndex, boolean powerUp);
 
-     * Returns a list of Forbidden PLMNs from the specified SIM App
-     * Returns null if the query fails.
-     *
-     *
-     * <p>Requires that the calling app has READ_PRIVILEGED_PHONE_STATE
-     *
-     * @param subId subscription ID used for authentication
-     * @param appType the icc application type, like {@link #APPTYPE_USIM}
-     */
-    String[] getForbiddenPlmns(int subId, int appType);
-
     /**
      * Check if phone is in emergency callback mode
      * @return true if phone is in emergency callback mode
