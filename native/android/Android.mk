@@ -1,7 +1,7 @@
 BASE_PATH := $(call my-dir)
 LOCAL_PATH:= $(call my-dir)
 
-common_cflags := -Wall -Werror -Wunused -Wunreachable-code
+common_cflags := -Wall
 
 include $(CLEAR_VARS)
 

@@ -24,9 +24,6 @@ cc_defaults {
     name: "libandroid_defaults",
     cflags: [
         "-Wall",
-        "-Werror",
-        "-Wunused",
-        "-Wunreachable-code",
     ],
 }
 

@@ -131,76 +131,20 @@ int ASensorManager_destroyEventQueue(ASensorManager* manager, ASensorEventQueue*
 }
 
 int ASensorManager_createSharedMemoryDirectChannel(ASensorManager *manager, int fd, size_t size) {
-    RETURN_IF_MANAGER_IS_NULL(android::BAD_VALUE);
-
-    if (fd < 0) {
-        ERROR_INVALID_PARAMETER("fd is invalid.");
-        return android::BAD_VALUE;
-    }
-
-    if (size < sizeof(ASensorEvent)) {
-        ERROR_INVALID_PARAMETER("size has to be greater or equal to sizeof(ASensorEvent).");
-        return android::BAD_VALUE;
-    }
-
-    native_handle_t *resourceHandle = native_handle_create(1 /* nFd */, 0 /* nInt */);
-    if (!resourceHandle) {
-        return android::NO_MEMORY;
-    }
-
-    resourceHandle->data[0] = fd;
-    int ret = static_cast<SensorManager *>(manager)->createDirectChannel(
-            size, ASENSOR_DIRECT_CHANNEL_TYPE_SHARED_MEMORY, resourceHandle);
-    native_handle_delete(resourceHandle);
-    return ret;
+    return android::BAD_VALUE;
 }
 
 int ASensorManager_createHardwareBufferDirectChannel(
         ASensorManager *manager, AHardwareBuffer const *buffer, size_t size) {
-    RETURN_IF_MANAGER_IS_NULL(android::BAD_VALUE);
-
-    if (buffer == nullptr) {
-        ERROR_INVALID_PARAMETER("buffer cannot be NULL");
-        return android::BAD_VALUE;
-    }
-
-    if (size < sizeof(ASensorEvent)) {
-        ERROR_INVALID_PARAMETER("size has to be greater or equal to sizeof(ASensorEvent).");
-        return android::BAD_VALUE;
-    }
-
-    const native_handle_t *resourceHandle = AHardwareBuffer_getNativeHandle(buffer);
-    if (!resourceHandle) {
-        return android::NO_MEMORY;
-    }
-
-    return static_cast<SensorManager *>(manager)->createDirectChannel(
-            size, ASENSOR_DIRECT_CHANNEL_TYPE_HARDWARE_BUFFER, resourceHandle);
+    return android::BAD_VALUE;
 }
 
 void ASensorManager_destroyDirectChannel(ASensorManager *manager, int channelId) {
-    RETURN_IF_MANAGER_IS_NULL(void());
-
-    static_cast<SensorManager *>(manager)->destroyDirectChannel(channelId);
 }
 
 int ASensorManager_configureDirectReport(
         ASensorManager *manager, ASensor const *sensor, int channelId, int rate) {
-    RETURN_IF_MANAGER_IS_NULL(android::BAD_VALUE);
-
-    int sensorHandle;
-    if (sensor == nullptr) {
-        if (rate != ASENSOR_DIRECT_RATE_STOP) {
-            ERROR_INVALID_PARAMETER(
-                "sensor cannot be null when rate is not ASENSOR_DIRECT_RATE_STOP");
-            return android::BAD_VALUE;
-        }
-        sensorHandle = -1;
-    } else {
-        sensorHandle = static_cast<Sensor const *>(sensor)->getHandle();
-    }
-    return static_cast<SensorManager *>(manager)->configureDirectChannel(
-            channelId, sensorHandle, rate);
+    return android::BAD_VALUE;
 }
 
 /*****************************************************************************/
@@ -334,11 +278,9 @@ bool ASensor_isWakeUpSensor(ASensor const* sensor) {
 }
 
 bool ASensor_isDirectChannelTypeSupported(ASensor const *sensor, int channelType) {
-    RETURN_IF_SENSOR_IS_NULL(false);
-    return static_cast<Sensor const *>(sensor)->isDirectChannelTypeSupported(channelType);
+    return false;
 }
 
 int ASensor_getHighestDirectReportRateLevel(ASensor const *sensor) {
-    RETURN_IF_SENSOR_IS_NULL(ASENSOR_DIRECT_RATE_STOP);
-    return static_cast<Sensor const *>(sensor)->getHighestDirectReportRateLevel();
+    return ASENSOR_DIRECT_RATE_STOP;
 }
