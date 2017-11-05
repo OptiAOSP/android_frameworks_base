@@ -243,7 +243,8 @@ public class GpsNetInitiatedHandler {
     }
 
     public boolean getInEmergency() {
-        boolean isInEmergencyCallback = mTelephonyManager.getEmergencyCallbackMode();
+        boolean isInEmergencyCallback = Boolean.parseBoolean(
+                SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE));
         return mIsInEmergency || isInEmergencyCallback;
     }
 
