@@ -2,7 +2,7 @@
 # files
 LOCAL_REL_DIR := core/jni
 
-LOCAL_CFLAGS += -Wall -Werror -Wno-unused-parameter
+LOCAL_CFLAGS += -Wall -Wno-unused-parameter
 
 LOCAL_SRC_FILES += \
     $(LOCAL_REL_DIR)/com_android_server_AlarmManagerService.cpp \
@@ -66,7 +66,6 @@ LOCAL_SHARED_LIBRARIES += \
     libinputservice \
     libschedulerservicehidl \
     libsensorservice \
-    libsensorservicehidl \
     libskia \
     libgui \
     libusbhost \
