@@ -489,8 +489,11 @@ LOCAL_SRC_FILES += \
 	telephony/java/com/android/ims/internal/IImsEcbm.aidl \
 	telephony/java/com/android/ims/internal/IImsEcbmListener.aidl \
         telephony/java/com/android/ims/internal/IImsExternalCallStateListener.aidl \
+        telephony/java/com/android/ims/internal/IImsFeatureStatusCallback.aidl \
         telephony/java/com/android/ims/internal/IImsMultiEndpoint.aidl \
 	telephony/java/com/android/ims/internal/IImsService.aidl \
+	telephony/java/com/android/ims/internal/IImsServiceController.aidl \
+	telephony/java/com/android/ims/internal/IImsServiceFeatureListener.aidl \
 	telephony/java/com/android/ims/internal/IImsStreamMediaSession.aidl \
 	telephony/java/com/android/ims/internal/IImsUt.aidl \
 	telephony/java/com/android/ims/internal/IImsUtListener.aidl \
