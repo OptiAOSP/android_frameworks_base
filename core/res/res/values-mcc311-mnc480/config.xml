@@ -65,10 +65,4 @@
 
     <bool name="config_use_sim_language_file">true</bool>
 
-    <!-- Flag indicating whether strict threshold is used, or lenient threshold is used,
-          when evaluating RSRP for LTE antenna bar display
-           0. Strict threshold
-           1. Lenient threshold
-    -->
-    <integer name="config_LTE_RSRP_threshold_type">0</integer>
 </resources>
