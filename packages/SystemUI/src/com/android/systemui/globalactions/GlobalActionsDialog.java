@@ -87,7 +87,6 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import lineageos.providers.LineageSettings;
 import org.lineageos.internal.util.RebootUtils;
 
 import static org.lineageos.internal.util.PowerMenuConstants.*;
