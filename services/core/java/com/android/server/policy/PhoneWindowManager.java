@@ -305,7 +305,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     static final int LONG_PRESS_HOME_NOTHING = 0;
     static final int LONG_PRESS_HOME_ALL_APPS = 1;
     static final int LONG_PRESS_HOME_ASSIST = 2;
-    static final int LAST_LONG_PRESS_HOME_BEHAVIOR = LONG_PRESS_HOME_ASSIST;
+    static final int LONG_PRESS_HOME_RECENT_SYSTEM_UI = 3;
+    static final int LAST_LONG_PRESS_HOME_BEHAVIOR = LONG_PRESS_HOME_RECENT_SYSTEM_UI;
 
     static final int DOUBLE_TAP_HOME_NOTHING = 0;
     static final int DOUBLE_TAP_HOME_RECENT_SYSTEM_UI = 1;
@@ -1776,6 +1777,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case LONG_PRESS_HOME_ASSIST:
                 launchAssistAction(null, deviceId);
+                break;
+            case LONG_PRESS_HOME_RECENT_SYSTEM_UI:
+                preloadRecentApps();
                 break;
             default:
                 Log.w(TAG, "Undefined home long press behavior: " + mLongPressOnHomeBehavior);
