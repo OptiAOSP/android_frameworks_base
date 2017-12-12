@@ -148,7 +148,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(lineageos.content.Intent.ACTION_UPDATE_POWER_MENU);
+        filter.addAction(Intent.ACTION_UPDATE_POWER_MENU);
         filter.addAction(TelephonyIntents.ACTION_EMERGENCY_CALLBACK_MODE_CHANGED);
         context.registerReceiver(mBroadcastReceiver, filter);
 
@@ -1271,7 +1271,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
                     mIsWaitingForEcmExit = false;
                     changeAirplaneModeSystemSetting(true);
                 }
-            } else if (lineageos.content.Intent.ACTION_UPDATE_POWER_MENU.equals(action)) {
+            } else if (Intent.ACTION_UPDATE_POWER_MENU.equals(action)) {
                 updatePowerMenuActions();
             }
         }
@@ -1334,6 +1334,12 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
             }
         }
     };
+
+    private ToggleAction.State getUpdatedAirplaneToggleState() {
+        return (Settings.Global.getInt(mContext.getContentResolver(),
+                    Settings.Global.AIRPLANE_MODE_ON, 0) == 1) ?
+                ToggleAction.State.On : ToggleAction.State.Off;
+    }
 
     private void onAirplaneModeChanged() {
         // Let the service state callbacks handle the state.

@@ -6963,6 +6963,18 @@ public final class Settings {
         public static final String NOTIFICATION_BADGING = "notification_badging";
 
         /**
+         * Whether to include options in power menu for rebooting into recovery or bootloader
+         * @hide
+         */
+        public static final String ADVANCED_REBOOT = "advanced_reboot";
+
+        /**
+         * String to contain power menu actions
+         * @hide
+         */
+        public static final String POWER_MENU_ACTIONS = "power_menu_actions";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
@@ -7058,7 +7070,9 @@ public final class Settings {
             ASSIST_GESTURE_ENABLED,
             ASSIST_GESTURE_SENSITIVITY,
             VR_DISPLAY_MODE,
-            NOTIFICATION_BADGING
+            NOTIFICATION_BADGING,
+            ADVANCED_REBOOT,
+            POWER_MENU_ACTIONS
         };
 
         /**

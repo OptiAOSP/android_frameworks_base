@@ -3523,6 +3523,9 @@ public class Intent implements Parcelable, Cloneable {
     @SdkConstant(SdkConstant.SdkConstantType.BROADCAST_INTENT_ACTION)
     public static final String ACTION_SERVICE_STATE = "android.intent.action.SERVICE_STATE";
 
+
+    public static final String ACTION_UPDATE_POWER_MENU = "android.intent.action.UPDATE_POWER_MENU";
+
     /**
      * An int extra used with {@link #ACTION_SERVICE_STATE} which indicates voice registration
      * state.

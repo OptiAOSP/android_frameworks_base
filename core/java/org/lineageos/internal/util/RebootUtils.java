@@ -27,7 +27,7 @@ public final class RebootUtils {
         KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         boolean keyguardLocked = km.inKeyguardRestrictedInputMode() && km.isKeyguardSecure();
         boolean advancedRebootEnabled = Settings.Secure.getInt(context.getContentResolver(),
-                LineageSettings.Secure.ADVANCED_REBOOT, 0) == 1;
+                Settings.Secure.ADVANCED_REBOOT, 0) == 1;
         boolean isPrimaryUser = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
 
         return advancedRebootEnabled && !keyguardLocked && isPrimaryUser;

@@ -17,11 +17,12 @@
 -->
 <resources>
     <!-- Package Manager -->
+<!--
     <java-symbol type="array" name="config_disabledComponents" />
     <java-symbol type="array" name="config_forceEnabledComponents" />
-
+-->
     <!-- Usb drive persistent notification -->
-    <java-symbol type="bool" name="config_persistUsbDriveNotification" />
+<!--    <java-symbol type="bool" name="config_persistUsbDriveNotification" /> -->
 
     <!-- Power menu -->
     <java-symbol type="array" name="shutdown_reboot_options" />
