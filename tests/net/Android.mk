@@ -85,8 +85,7 @@ LOCAL_SHARED_LIBRARIES := \
   libnetdaidl
 
 LOCAL_STATIC_LIBRARIES := \
-  libpcap \
-  libapf
+  libpcap
 
 LOCAL_MODULE := libframeworksnettestsjni
 
