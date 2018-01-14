@@ -11195,6 +11195,8 @@ public class ActivityManagerService extends IActivityManager.Stub
         } catch (RemoteException ignored) {
         }
         if (cpi == null) {
+            if (userId == 0)
+                 return null;
             return "Failed to find provider " + authority + " for user " + userId
                     + "; expected to find a valid ContentProvider for this authority";
         }
