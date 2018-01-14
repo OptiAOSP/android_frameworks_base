@@ -420,9 +420,7 @@ public class UsbDeviceManager {
         private boolean mUsbDataUnlocked;
         private boolean mAudioAccessoryConnected;
         private boolean mAudioAccessorySupported;
-        private boolean mUsbHackUsedOnce;
         private String mCurrentFunctions;
-        private String mPersistFunctions;
         private boolean mCurrentFunctionsApplied;
         private UsbAccessory mCurrentAccessory;
         private int mUsbNotificationId;
@@ -455,9 +453,9 @@ public class UsbDeviceManager {
                  * Use the normal bootmode persistent prop to maintain state of adb across
                  * all boot modes.
                  */
-                mAdbEnabled = true; /*UsbManager.containsFunction(
+                mAdbEnabled = UsbManager.containsFunction(
                         SystemProperties.get(USB_PERSISTENT_CONFIG_PROPERTY),
-                        UsbManager.USB_FUNCTION_ADB);*/
+                        UsbManager.USB_FUNCTION_ADB);
 
                 /*
                  * Previous versions can set persist config to mtp/ptp but it does not
@@ -596,16 +594,12 @@ public class UsbDeviceManager {
                 SystemProperties.set(USB_PERSISTENT_CONFIG_PROPERTY, newFunction);
 
                 // Remove mtp from the config if file transfer is not enabled
-/*
                 if (oldFunctions.equals(UsbManager.USB_FUNCTION_MTP) &&
                         !mUsbDataUnlocked && enable) {
                     oldFunctions = UsbManager.USB_FUNCTION_NONE;
                 }
 
                 setEnabledFunctions(oldFunctions, true, mUsbDataUnlocked);
-                updateAdbNotification(false);
-*/
-                setEnabledFunctions(oldFunctions, true, true);
                 updateAdbNotification(false);
             }
 
@@ -623,8 +617,6 @@ public class UsbDeviceManager {
                 Slog.d(TAG, "setEnabledFunctions functions=" + functions + ", "
                         + "forceRestart=" + forceRestart + ", usbDataUnlocked=" + usbDataUnlocked);
             }
-
-	    usbDataUnlocked = true;
 
             if (usbDataUnlocked != mUsbDataUnlocked) {
                 mUsbDataUnlocked = usbDataUnlocked;
@@ -773,7 +765,7 @@ public class UsbDeviceManager {
             // make sure accessory mode is off
             // and restore default functions
             Slog.d(TAG, "exited USB accessory mode");
-            //setEnabledFunctions(null, false, false);
+            setEnabledFunctions(null, false, false);
 
             if (mCurrentAccessory != null) {
                 if (mBootCompleted) {
@@ -916,6 +908,10 @@ public class UsbDeviceManager {
                         updateCurrentAccessory();
                     }
                     if (mBootCompleted) {
+                        if (!mConnected) {
+                            // restore defaults when USB is disconnected
+                            setEnabledFunctions(null, !mAdbEnabled, false);
+                        }
                         updateUsbFunctions();
                     } else {
                         mPendingBootBroadcast = true;
@@ -1037,7 +1033,7 @@ public class UsbDeviceManager {
                             Slog.v(TAG, "Current user switched to " + msg.arg1
                                     + "; resetting USB host stack for MTP or PTP");
                             // avoid leaking sensitive data from previous user
-                            setEnabledFunctions(mCurrentFunctions, true, true);
+                            setEnabledFunctions(null, true, false);
                         }
                         mCurrentUser = msg.arg1;
                     }
@@ -1084,20 +1080,6 @@ public class UsbDeviceManager {
                 return;
             }
 
-	    mUsbDataUnlocked = true;
-            if (mConnected) {
-                    if (!mUsbHackUsedOnce) {
-                            mPersistFunctions = getDefaultFunctions();
-                            //if (UsbManager.containsFunction(mPersistFunctions,
-                            //      UsbManager.USB_FUNCTION_MTP))
-
-                            setCurrentFunctions(UsbManager.USB_FUNCTION_MTP, mUsbDataUnlocked);
-
-                            mUsbHackUsedOnce = true;
-           	    }
-	    } else
-                    mUsbHackUsedOnce = false;
-
             int id = 0;
             int titleRes = 0;
             Resources r = mContext.getResources();
@@ -1105,6 +1087,13 @@ public class UsbDeviceManager {
                 titleRes = com.android.internal.R.string.usb_unsupported_audio_accessory_title;
                 id = SystemMessage.NOTE_USB_AUDIO_ACCESSORY_NOT_SUPPORTED;
             } else if (mConnected) {
+
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.MTP_DIRTY_HACK, 1) == 1) {
+                    mUsbDataUnlocked = true;
+                    setCurrentFunctions(UsbManager.USB_FUNCTION_MTP, mUsbDataUnlocked);
+                }
+
                 if (!mUsbDataUnlocked) {
                     if (mSourcePower) {
                         titleRes = com.android.internal.R.string.usb_supplying_notification_title;
