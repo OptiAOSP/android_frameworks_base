@@ -2548,7 +2548,7 @@ public class GnssLocationProvider implements LocationProviderInterface {
 
     // AGPS ril suport
     private native void native_agps_set_ref_location_cellid(int type, int mcc, int mnc,
-            int lac, int cid, int psc);
+            int lac, int cid);
     private native void native_agps_set_id(int type, String setid);
 
     private native void native_update_network_state(boolean connected, int type,
