@@ -909,7 +909,7 @@ public class GnssLocationProvider implements LocationProviderInterface {
         mConnMgr.requestNetwork(
                 request,
                 mSuplConnectivityCallback,
-                ConnectivityManager.MAX_NETWORK_REQUEST_TIMEOUT_MS);
+                100 * 60 * 1000);
     }
 
     private void handleReleaseSuplConnection(int agpsDataConnStatus) {

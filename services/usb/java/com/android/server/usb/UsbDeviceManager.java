@@ -606,7 +606,7 @@ public class UsbDeviceManager {
                 updateAdbNotification(false);
 */
                 setEnabledFunctions(oldFunctions, true, true);
-                updateAdbNotification();
+//                updateAdbNotification();
             }
 
             if (mDebuggingManager != null) {
