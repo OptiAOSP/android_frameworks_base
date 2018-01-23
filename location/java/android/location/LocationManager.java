@@ -18,8 +18,11 @@ package android.location;
 
 import com.android.internal.location.ProviderProperties;
 
+import android.Manifest;
 import android.annotation.RequiresPermission;
+import android.annotation.SuppressLint;
 import android.annotation.SystemApi;
+import android.annotation.SystemService;
 import android.annotation.TestApi;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -46,11 +49,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  * {@link Intent} when the device enters the proximity of a given
  * geographical location.
  *
- * <p>You do not
- * instantiate this class directly; instead, retrieve it through
- * {@link android.content.Context#getSystemService
- * Context.getSystemService(Context.LOCATION_SERVICE)}.
- *
  * <p class="note">Unless noted, all Location API methods require
  * the {@link android.Manifest.permission#ACCESS_COARSE_LOCATION} or
  * {@link android.Manifest.permission#ACCESS_FINE_LOCATION} permissions.
@@ -59,6 +57,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  * return location results, but the update rate will be throttled and the exact
  * location will be obfuscated to a coarse level of accuracy.
  */
+@SystemService(Context.LOCATION_SERVICE)
 public class LocationManager {
     private static final String TAG = "LocationManager";
 
@@ -66,6 +65,7 @@ public class LocationManager {
     private final ILocationManager mService;
     private final GnssMeasurementCallbackTransport mGnssMeasurementCallbackTransport;
     private final GnssNavigationMessageCallbackTransport mGnssNavigationMessageCallbackTransport;
+    private final BatchedLocationCallbackTransport mBatchedLocationCallbackTransport;
     private final HashMap<GpsStatus.Listener, GnssStatusListenerTransport> mGpsStatusListeners =
             new HashMap<>();
     private final HashMap<GpsStatus.NmeaListener, GnssStatusListenerTransport> mGpsNmeaListeners =
@@ -321,9 +321,13 @@ public class LocationManager {
     public LocationManager(Context context, ILocationManager service) {
         mService = service;
         mContext = context;
-        mGnssMeasurementCallbackTransport = new GnssMeasurementCallbackTransport(mContext, mService);
+        mGnssMeasurementCallbackTransport =
+                new GnssMeasurementCallbackTransport(mContext, mService);
         mGnssNavigationMessageCallbackTransport =
                 new GnssNavigationMessageCallbackTransport(mContext, mService);
+        mBatchedLocationCallbackTransport =
+                new BatchedLocationCallbackTransport(mContext, mService);
+
     }
 
     private LocationProvider createProvider(String name, ProviderProperties properties) {
@@ -824,6 +828,7 @@ public class LocationManager {
      * @hide
      */
     @SystemApi
+    @RequiresPermission(anyOf = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION})
     public void requestLocationUpdates(LocationRequest request, LocationListener listener,
             Looper looper) {
         checkListener(listener);
@@ -852,6 +857,7 @@ public class LocationManager {
      * @hide
      */
     @SystemApi
+    @RequiresPermission(anyOf = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION})
     public void requestLocationUpdates(LocationRequest request, PendingIntent intent) {
         checkPendingIntent(intent);
         requestLocationUpdates(request, null, null, intent);
@@ -1554,9 +1560,10 @@ public class LocationManager {
 
         @Override
         public void onSvStatusChanged(int svCount, int[] prnWithFlags,
-                float[] cn0s, float[] elevations, float[] azimuths) {
+                float[] cn0s, float[] elevations, float[] azimuths, float[] carrierFreqs) {
             if (mGnssCallback != null) {
-                mGnssStatus = new GnssStatus(svCount, prnWithFlags, cn0s, elevations, azimuths);
+                mGnssStatus = new GnssStatus(svCount, prnWithFlags, cn0s, elevations, azimuths,
+                    carrierFreqs);
 
                 Message msg = Message.obtain();
                 msg.what = GpsStatus.GPS_EVENT_SATELLITE_STATUS;
@@ -1812,6 +1819,7 @@ public class LocationManager {
      */
     @Deprecated
     @SystemApi
+    @SuppressLint("Doclava125")
     public boolean addGpsMeasurementListener(GpsMeasurementsEvent.Listener listener) {
         return false;
     }
@@ -1849,6 +1857,7 @@ public class LocationManager {
      */
     @Deprecated
     @SystemApi
+    @SuppressLint("Doclava125")
     public void removeGpsMeasurementListener(GpsMeasurementsEvent.Listener listener) {
     }
 
@@ -1869,6 +1878,7 @@ public class LocationManager {
      */
     @Deprecated
     @SystemApi
+    @SuppressLint("Doclava125")
     public boolean addGpsNavigationMessageListener(GpsNavigationMessageEvent.Listener listener) {
         return false;
     }
@@ -1877,11 +1887,13 @@ public class LocationManager {
      * No-op method to keep backward-compatibility.
      * Don't use it. Use {@link #unregisterGnssNavigationMessageCallback} instead.
      * @hide
-     * @deprecated use {@link #unregisterGnssNavigationMessageCallback(GnssMeasurements.Callback)}
+     * @deprecated use
+     * {@link #unregisterGnssNavigationMessageCallback(GnssNavigationMessage.Callback)}
      * instead
      */
     @Deprecated
     @SystemApi
+    @SuppressLint("Doclava125")
     public void removeGpsNavigationMessageListener(GpsNavigationMessageEvent.Listener listener) {
     }
 
@@ -1953,6 +1965,96 @@ public class LocationManager {
     public int getGnssYearOfHardware() {
         try {
             return mService.getGnssYearOfHardware();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns the batch size (in number of Location objects) that are supported by the batching
+     * interface.
+     *
+     * @return Maximum number of location objects that can be returned
+     * @hide
+     */
+    @SystemApi
+    @RequiresPermission(Manifest.permission.LOCATION_HARDWARE)
+    public int getGnssBatchSize() {
+        try {
+            return mService.getGnssBatchSize(mContext.getPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Start hardware-batching of GNSS locations. This API is primarily used when the AP is
+     * asleep and the device can batch GNSS locations in the hardware.
+     *
+     * Note this is designed (as was the fused location interface before it) for a single user
+     * SystemApi - requests are not consolidated.  Care should be taken when the System switches
+     * users that may have different batching requests, to stop hardware batching for one user, and
+     * restart it for the next.
+     *
+     * @param periodNanos Time interval, in nanoseconds, that the GNSS locations are requested
+     *                    within the batch
+     * @param wakeOnFifoFull True if the hardware batching should flush the locations in a
+     *                       a callback to the listener, when it's internal buffer is full.  If
+     *                       set to false, the oldest location information is, instead,
+     *                       dropped when the buffer is full.
+     * @param callback The listener on which to return the batched locations
+     * @param handler The handler on which to process the callback
+     *
+     * @return True if batching was successfully started
+     * @hide
+     */
+    @SystemApi
+    @RequiresPermission(Manifest.permission.LOCATION_HARDWARE)
+    public boolean registerGnssBatchedLocationCallback(long periodNanos, boolean wakeOnFifoFull,
+                                  BatchedLocationCallback callback, Handler handler) {
+        mBatchedLocationCallbackTransport.add(callback, handler);
+
+        try {
+            return mService.startGnssBatch(periodNanos, wakeOnFifoFull, mContext.getPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Flush the batched GNSS locations.
+     * All GNSS locations currently ready in the batch are returned via the callback sent in
+     * startGnssBatch(), and the buffer containing the batched locations is cleared.
+     *
+     * @hide
+     */
+    @SystemApi
+    @RequiresPermission(Manifest.permission.LOCATION_HARDWARE)
+    public void flushGnssBatch() {
+        try {
+            mService.flushGnssBatch(mContext.getPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Stop batching locations. This API is primarily used when the AP is
+     * asleep and the device can batch locations in the hardware.
+     *
+     * @param callback the specific callback class to remove from the transport layer
+     *
+     * @return True if batching was successfully started
+     * @hide
+     */
+    @SystemApi
+    @RequiresPermission(Manifest.permission.LOCATION_HARDWARE)
+    public boolean unregisterGnssBatchedLocationCallback(BatchedLocationCallback callback) {
+
+        mBatchedLocationCallbackTransport.remove(callback);
+
+        try {
+            return mService.stopGnssBatch();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
