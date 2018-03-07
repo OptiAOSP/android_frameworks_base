@@ -313,9 +313,11 @@ void SpotShadow::makeClockwise(Vector2* polygon, int len) {
     if (polygon == nullptr  || len == 0) {
         return;
     }
+#if 0
     if (!ShadowTessellator::isClockwise(polygon, len)) {
         reverse(polygon, len);
     }
+#endif
 }
 
 /**
