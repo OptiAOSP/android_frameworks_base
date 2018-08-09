@@ -374,9 +374,10 @@ public class UsbDeviceManager {
                             UsbManager.USB_FUNCTION_MTP);
                     boolean ptpEnable = UsbManager.containsFunction(getDefaultFunctions(),
                             UsbManager.USB_FUNCTION_PTP);
-                    if (mtpEnable || ptpEnable) mUsbDataUnlocked = true;
+                    boolean umsEnable = UsbManager.containsFunction(getDefaultFunctions(),
+                            UsbManager.USB_FUNCTION_UMS);
+                    if (mtpEnable || ptpEnable || umsEnable) mUsbDataUnlocked = true;
                 }
-
                 String state = FileUtils.readTextFile(new File(STATE_PATH), 0, null).trim();
                 updateState(state);
 
@@ -835,7 +836,9 @@ public class UsbDeviceManager {
                         final boolean active = UsbManager.containsFunction(mCurrentFunctions,
                                         UsbManager.USB_FUNCTION_MTP)
                                 || UsbManager.containsFunction(mCurrentFunctions,
-                                        UsbManager.USB_FUNCTION_PTP);
+                                        UsbManager.USB_FUNCTION_PTP)
+                                || UsbManager.containsFunction(mCurrentFunctions,
+                                        UsbManager.USB_FUNCTION_UMS);
                         if (active && mCurrentUser != UserHandle.USER_NULL) {
                             Slog.v(TAG, "Current user switched to " + mCurrentUser
                                     + "; resetting USB host stack for MTP or PTP");
@@ -874,6 +877,9 @@ public class UsbDeviceManager {
                 } else if (UsbManager.containsFunction(mCurrentFunctions,
                         UsbManager.USB_FUNCTION_MIDI)) {
                     id = com.android.internal.R.string.usb_midi_notification_title;
+                } else if (UsbManager.containsFunction(mCurrentFunctions,
+                        UsbManager.USB_FUNCTION_UMS)) {
+                    id = com.android.internal.R.string.usb_mtp_notification_title;
                 } else if (UsbManager.containsFunction(mCurrentFunctions,
                         UsbManager.USB_FUNCTION_ACCESSORY)) {
                     id = com.android.internal.R.string.usb_accessory_notification_title;

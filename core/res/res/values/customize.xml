@@ -50,4 +50,5 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <bool name="operator_custom_sim_icon">false</bool>
     <!-- Setting customize default bluetooth name -->
     <string name="def_custom_bt_defname"></string>
+    <bool name="config_usb_data_unlock">true</bool>
 </resources>
