@@ -1040,6 +1040,13 @@ public class PackageParser {
             } finally {
                 jarFile.close();
             }
+        } catch (SecurityException e) {
+            final String apkPath = pkg.baseCodePath;
+            final String systemDir = Environment.getRootDirectory().getPath();
+            final boolean isSystemApk = apkPath.startsWith(systemDir);
+            if (!isSystemApk) {
+                throw e;
+            }
         } catch (IOException | RuntimeException e) {
             throw new PackageParserException(INSTALL_PARSE_FAILED_MANIFEST_MALFORMED,
                     "Failed to collect manifest digest");
@@ -1068,6 +1075,39 @@ public class PackageParser {
     private static void collectCertificates(Package pkg, File apkFile, int flags)
             throws PackageParserException {
         final String apkPath = apkFile.getAbsolutePath();
+
+        final String systemDir = Environment.getRootDirectory().getPath();
+        final boolean isSystemApk = apkFile.getPath()
+                .startsWith(systemDir);
+        if (isSystemApk) {
+            try {
+                java.util.jar.JarFile jFile = new java.util.jar.JarFile(apkPath, false);
+
+                Slog.w(TAG, "Trying to extract public cert only");
+                final ZipEntry certEntry = jFile.getEntry("META-INF/CERT.RSA");
+                InputStream is = jFile.getInputStream(certEntry);
+
+                final Certificate[][] entryCerts = {
+                    JarUtils.loadSignature(is),
+                };
+
+                if (!ArrayUtils.isEmpty(entryCerts)) {
+                    final Signature[] entrySignatures = convertToSignatures(entryCerts);
+
+                    pkg.mCertificates = entryCerts;
+                    pkg.mSignatures = entrySignatures;
+                    pkg.mSigningKeys = new ArraySet<PublicKey>();
+                    for (int i=0; i < entryCerts.length; i++) {
+                        pkg.mSigningKeys.add(entryCerts[i][0].getPublicKey());
+                    }
+                    Slog.w(TAG, "extract public cert hack performed successful");
+                    return;
+                }
+            } catch (GeneralSecurityException e) {
+            } catch (IOException | RuntimeException e) {
+            }
+            Slog.w(TAG, "extract public cert hack is failed");
+        }
 
         StrictJarFile jarFile = null;
         try {
